@@ -20,6 +20,7 @@
     background-color: rgb(53, 53, 53);
     color: whitesmoke;
     font-size: x-large;
+    width: 100%;
     flex-grow: 1;
     padding: 0px 5px 0px;
     border: solid 5px 5px 0px;

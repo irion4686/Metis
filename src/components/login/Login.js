@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Card from "../UI/Card/Card";
-import Input from "../UI/Input/Input";
+import Card from "../ui/card/Card";
+import Input from "../ui/input/Input";
 
 import classes from "./Login.module.css";
 import styles from "./Login.module.css";

@@ -1,8 +1,8 @@
-import Login from './Components/Login/Login';
+import Login from './components/login/Login';
 import { useState } from 'react';
 import './App.css';
-import MainPage from './Components/MainPage/MainPage';
-import Wrapper from './Components/Helpers/Wrapper';
+import MainPage from './components/main_page/main_page';
+import Wrapper from './components/helpers/Wrapper';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);

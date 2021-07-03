@@ -1,0 +1,11 @@
+.new_quote {
+    background-color: rgb(39, 39, 39);
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    height: 100em;
+}
+
+.new_quote h2 {
+    font-size: 1.5rem !important;
+}
