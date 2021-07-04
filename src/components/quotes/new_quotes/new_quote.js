@@ -2,41 +2,53 @@ import classes from "./new_quote.module.css";
 import { useState } from "react";
 
 import AutocompleteInput from "../../ui/input/autocomplete_input";
+import ClientForm from "./client_form";
 
 const NewQuote = (props) => {
-    const [enteredFirstName, setFirstName] = useState("");
-    const [enteredLastName, setLastName] = useState("");
-    const [enteredBusinessName, setBusinessName] = useState("");
-    const [enteredEmail, setEmail] = useState("");
-    const [enteredPhone, setPhone] = useState("");
+  let client = {
+    firstName: "",
+    lastName: "",
+    businessName: "",
+    email: "",
+    phone: "",
+    id: "",
+  };
 
-    const onFirstNameChange = (event) => {
-        setFirstName(event.target.value);
-    };
+  const DUMMY_CLIENTS = [
+    {
+      firstName: "Cody",
+      lastName: "Irion",
+      businessName: "Eclipse Equine Transport",
+      email: "cody@eclipseequinetransport.com",
+      phone: "919-923-2259",
+      id: "01",
+    },
+    {
+      firstName: "Corey",
+      lastName: "Overcash",
+      businessName: "",
+      email: "coreyovercash@gmail.com",
+      phone: "919-599-8498",
+      id: "69",
+    },
+    {
+      firstName: "Colin",
+      lastName: "Farrel",
+      businessName: "Beverly Hills Farms",
+      email: "bigshot@gmail.com",
+      phone: "919-923-2259",
+      id: "202",
+    },
+  ];
 
-    const onLastNameChange = (event) => {
-        setLastName(event.target.value);
-    };
+  const onClientChange = (event) => {
+    client = event;
+  };
+
   return (
     <div className={classes.new_quote}>
       <form>
-          <h2>Client</h2>
-            <AutocompleteInput
-            label="First Name"
-            isRequired={false}
-            value={enteredFirstName}
-            onChange={onFirstNameChange}
-            id="firstName"
-            type="text"
-        />
-        <AutocompleteInput
-            label="Last Name"
-            isRequired={false}
-            value={enteredLastName}
-            onChange={onLastNameChange}
-            id="lastName"
-            type="text"
-        />
+        <ClientForm onClientChange={onClientChange} suggestions={DUMMY_CLIENTS}/>
       </form>
     </div>
   );
