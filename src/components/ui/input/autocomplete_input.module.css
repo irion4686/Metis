@@ -9,11 +9,30 @@
     border-radius: 8px;
   }
 
+  button {
+    background-color: transparent;
+    width: 90%;
+    text-align: left;
+    margin: 2px;
+  }
+
+  ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  }
+
+  li {
+    align-self: start;
+  }
+
   label {
     font: inherit;
     font-size: larger;
     color: whitesmoke;
     width: 100%;
+    text-align: left !important;
+    font-size: large;
   }
   
   .input input {

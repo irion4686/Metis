@@ -5,23 +5,13 @@ import styles from "./autocomplete_input.module.css";
 const AutocompleteInput = (props) => {
   const [enteredValue, setValue] = useState("");
 
-  let suggestions = 
-    [
-      {
-    firstName: "",
-        lastName: "",
-        businessName: "",
-        email: "",
-        phone: "",
-        id: "",
-  }
-]
-  if (props.suggestions != undefined) {
-      suggestions = props.suggestions.map((client) => {
-        console.log(client.firstName);
-      return <li><label>client.firstName</label></li>;
-    })
-  }
+  let suggestions = []
+  if (props.suggestions !== undefined) {
+    console.log(props.suggestions.length);
+      suggestions = props.suggestions.map((client) => (
+      <li><button><label>{client.firstName} {client.lastName}<span > | </span>{client.businessName} <span > | </span>{client.email}<span > | </span>{client.phone}</label></button></li>
+      ))
+  };
   
 //   const onValueChange = (event) => {
 //     setValue(event.target.value);

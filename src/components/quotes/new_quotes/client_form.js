@@ -10,18 +10,19 @@ const ClientForm = (props) => {
         id: "",
     });
     
-    let firstNameSuggestions = {
+    let firstNameSuggestions = [
+    {
         firstName: "",
         lastName: "",
         businessName: "",
         email: "",
         phone: "",
         id: "",
-    }
+    },
+]
 
-    const suggestions = props.suggestions;
-    if (suggestions.length > 0) {
-        firstNameSuggestions = suggestions;
+    if (props.suggestions.length > 0) {
+        firstNameSuggestions = props.suggestions;
     }
 
     const onFirstNameChange = event => {

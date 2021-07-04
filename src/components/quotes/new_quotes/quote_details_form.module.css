@@ -1,0 +1,30 @@
+
+.details {
+    display:flex;
+    flex-flow: column;
+    margin-bottom: 10px;
+    width: 30%;
+    flex-grow: 0;
+    padding: 8px;
+}
+
+.details label {
+    font-size: 28px;
+}
+
+.dropdown {
+    outline: none;
+    margin: 8px 0px;
+    padding: 4px;
+    flex-grow: 0;
+    display: inline-block;
+    justify-content:left;
+    background: transparent;
+    appearance: none;
+    color: whitesmoke;
+    font-size: 28px;
+  }
+
+  .dropdown select:focus {
+    outline: none;
+  }
