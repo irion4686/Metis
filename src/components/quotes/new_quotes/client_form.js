@@ -52,7 +52,7 @@ const ClientForm = (props) => {
     }
 
     return (
-        <Fragment>
+        <div>
             <h2>Client</h2>
             <AutocompleteInput
             label="First Name"
@@ -94,7 +94,7 @@ const ClientForm = (props) => {
             id="phone"
             type="text"
         />
-        </Fragment>
+        </div>
     );
 }
 

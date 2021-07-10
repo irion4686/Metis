@@ -50,7 +50,7 @@ const NewQuote = (props) => {
   return (
     <div className={classes.new_quote}>
       <form>
-        <ClientForm onClientChange={onClientChange} suggestions={DUMMY_CLIENTS}/>
+        <ClientForm classname={classes.form} onClientChange={onClientChange} suggestions={DUMMY_CLIENTS}/>
         <AddressForm addressType="Origin"/>
         <AddressForm addressType="Destination" />
         <QuoteDetailsForm distance={600}/>

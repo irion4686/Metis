@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { Link } from 'react'
 import Card from "../ui/card/Card";
 import Input from "../ui/input/Input";
 
-import classes from "./Login.module.css";
-import styles from "./Login.module.css";
+import classes from "./login.module.css";
+import styles from "./login.module.css";
 
 const Login = (props) => {
   const [enteredEmail, setEmail] = useState("");
@@ -73,8 +74,8 @@ const Login = (props) => {
         </div>
       </form>
       <div>
-        <a className={styles.sign_up} href="#/">
-          Sign Up
+        <a className={styles.sign_up} href='/#' onClick={props.onSignup} >
+          Register
         </a>
       </div>
     </Card>
