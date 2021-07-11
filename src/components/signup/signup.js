@@ -112,24 +112,39 @@ const Signup = (props) => {
     }, [isValidFirstName, isValidLastName, isValidEmail, isValidPass, isValidConfirmPass, isValidPhone]);
 
     const onSignupHandler = async (event) => {
-        const newClient = {}
+        event.preventDefault();
+        console.log("submitting");
+        const newClient = {
+            first_name: enteredFirstName,
+            last_name: enteredLastName,
+            email: enteredEmail,
+            phone: enteredPhone,
+            password: enteredPassword
+        }
         try {
-            const response = await fetch('http://localhost:3001/api/signup', {
+            const response = await fetch('http://localhost:3001/api/users/add', {
                 method: 'POST',
                 body: JSON.stringify(newClient),
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
-            const result = await response.json();
+            if (response.ok) {
+                console.log(await response.json());
+            } else {
+                let message = 'Unknown error';
+                if (response.status === 409) message = 'User with that email already exists';
+                console.log(message);
+            }
         } catch (error) {
-
+            console.log("Error");
+            console.log(error);
         }
     };
 
     return (
         <Card className={classes.input}>
-            <form>
+            <form onSubmit={onSignupHandler}>
                 <h2>Registration</h2>
                 <label htmlFor="firstname">First name</label>
                 <Input id="firstname"

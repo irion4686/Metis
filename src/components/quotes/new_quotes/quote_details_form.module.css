@@ -3,7 +3,7 @@
     display:flex;
     flex-flow: column;
     margin-bottom: 10px;
-    width: 30%;
+    width: 90%;
     flex-grow: 0;
     padding: 8px;
 }
@@ -19,7 +19,7 @@
     flex-grow: 0;
     display: inline-block;
     justify-content:left;
-    background: transparent;
+    background: rgb(31, 31, 31);
     appearance: none;
     color: whitesmoke;
     font-size: 28px;

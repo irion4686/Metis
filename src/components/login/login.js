@@ -35,7 +35,8 @@ const Login = (props) => {
     }
   };
 
-  const onLoginHandler = (event) => {
+  const onLoginHandler = async (event) => {
+    event.preventDefault();
     if (
       enteredEmail.trim().length === 0 ||
       enteredPassword.trim().length === 0
@@ -43,8 +44,27 @@ const Login = (props) => {
       return;
     }
     if (isValidEmail && isValidPass) {
-      let bool = true;
-      props.onLogIn(bool);
+      const loginInfo = {
+        email: enteredEmail,
+        password: enteredPassword
+      }
+      try {
+        const response = await fetch('http://localhost:3001/api/login', {
+          method: 'POST',
+          body: JSON.stringify(loginInfo),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        if (response.ok) {
+          props.onLogIn(true);
+        } else {
+          console.log("Incorrect username and/or password");
+        }
+      } catch (error) {
+        console.log("Error");
+        console.log(error);
+      }
     }
   };
   return (

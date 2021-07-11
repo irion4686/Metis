@@ -1,5 +1,5 @@
 import Login from './components/login/login';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import './App.css';
 import MainPage from './components/main_page/main_page';
 import Signup from './components/signup/signup';
@@ -11,8 +11,20 @@ function App() {
 
   const [signup, setSignUp] = useState(false);
 
+  useEffect(() => {
+    setLoggedIn(sessionStorage.getItem('loggedIn') === 'true');
+  }, [])
+
   const loginHandler = event => {
-    setLoggedIn(event);
+    console.log("logged in now for real...");
+    setSignUp(false);
+    if (event === true) {
+      setLoggedIn(true);
+      sessionStorage.setItem('loggedIn', 'true');
+    } else {
+      setLoggedIn(false);
+      sessionStorage.removeItem('loggedIn');
+    }
   };
 
   const signupHandler = event => {
@@ -22,7 +34,7 @@ function App() {
   return (
     <Wrapper>
       {!loggedIn && !signup && <Login onSignup={signupHandler} onLogIn={loginHandler}/>}
-      {!loggedIn && signup && <Signup />}
+      {!loggedIn && signup && <Signup onSignup={loginHandler} />}
       {loggedIn && <MainPage onLogOut={loginHandler} />}
     </Wrapper>
     
