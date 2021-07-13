@@ -1,12 +1,12 @@
 import classes from "./new_quote.module.css";
 import { useState } from "react";
 
-import AutocompleteInput from "../../ui/input/autocomplete_input";
 import ClientForm from "./client_form";
 import AddressForm from "./address_form";
 import QuoteDetailsForm from "./quote_details_form";
 
 const NewQuote = (props) => {
+
   let client = {
     firstName: "",
     lastName: "",
