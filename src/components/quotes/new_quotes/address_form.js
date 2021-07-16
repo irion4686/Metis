@@ -1,85 +1,81 @@
 import {Fragment, useEffect, useState} from "react"
 import AutocompleteInput from "../../ui/input/autocomplete_input";
-import Script from 'react-load-script';
+import { getSuggestions } from '../../../model/address_model';
+
 const AddressForm = (props) => {
-    const [address, setAddress] = useState({
-        street: "",
-        city: "",
-        state: "",
-        zip: 0,
-    });
+    const [enteredStreet, setEnteredStreet] = useState('');
+    const [enteredCity, setEnteredCity] = useState('');
+    const [enteredState, setEnteredState] = useState('');
+    const [enteredZip, setEnteredZip] = useState('');
+    const [enteredId, setEnteredId] = useState('');
+    const [firstRender, setFirstRender] = useState(false);
     
-    let streetSuggestions = [
+    let suggestions = [
     {
         street: "",
         city: "",
         state: "",
         zip: 0,
+        id: ''
     }]
 
-    const [enteredCity, setEnteredCity] = useState('');
-    const [enteredState, setEnteredState] = useState('');
+    let address = {
+        street: '',
+        city: '',
+        state: '',
+        zip: 0,
+        id: ''
+    }
+
+    const selected = {
+        STREET: "street",
+        CITY: "city",
+        STATE: "state",
+        ZIP: "zip",
+        NONE: "none"
+    }
+    let currentlySelected =  selected.NONE;
 
     if (props.suggestions != undefined && props.suggestions.length > 0) {
-        streetSuggestions = props.suggestions;
+
     }
 
     const onStreetChange = event => {
-        address.street = event.target.value;
-        props.onClientChange(address);
+        setEnteredStreet(event.target.value);
     }
 
     const onCityChange = event => {
         setEnteredCity(event.target.value);
-        console.log(event.target.value);
     }
 
     const onStateChange = event => {
-        address.state = event.target.value;
-        props.onClientChange(address);
+        setEnteredState(event.target.value);
     }
 
     const onZipChange = event => {
-        address.zip = +event.target.value;
-        props.onClientChange(address);
+        setEnteredZip(+event.target.value);
     }
 
-    let autocomplete;
-    const handleScriptLoad = () => {
-        // Declare Options For Autocomplete
-        const options = {
-            types: ['(cities)'],
-        };
-        // Initialize Google Autocomplete
-        /*global google*/ // To disable any eslint 'google not defined' errors
-        autocomplete = new google.maps.places.Autocomplete(
-            document.getElementById('autocomplete'),
-            options,
-        );
+    const lookupSuggestions = () => {
+        suggestions = getSuggestions(address);
+    };
 
-        // Avoid paying for data that you don't need by restricting the set of
-        // place fields that are returned to just the address components and formatted
-        // address.
-        autocomplete.setFields(['address_components', 'formatted_address']);
-
-        // Fire Event when a suggested name is selected
-        autocomplete.addListener('place_changed', handlePlaceSelect);
-    }
-
-    const handlePlaceSelect = () => {
-
-        // Extract City From Address Object
-        const addressObject = autocomplete.getPlace();
-        const address = addressObject.address_components;
-
-        // Check if address is valid
-        if (address) {
-            // Set State
-            console.log('City: ', address[0].long_name);
-            setEnteredCity(address[0].long_name);
-            setEnteredState(address[1].long_name);
+    useEffect(() => {
+        if (!firstRender) {
+            setFirstRender(!firstRender);
+            return;
         }
-    }
+        const address = {
+            street: enteredStreet,
+            city: enteredCity,
+            state: enteredState,
+            zip: enteredZip,
+            id: enteredId,
+        }
+        lookupSuggestions();
+    }, [enteredStreet, enteredCity, enteredState, enteredZip, enteredId]);
+
+
 
     return (
         <Fragment>
@@ -89,25 +85,17 @@ const AddressForm = (props) => {
             isRequired={false}
             value={props.value}
             onChange={onStreetChange}
-            suggestions={streetSuggestions}
+            suggestions={suggestions}
             id="firstName"
             type="text"
         />
-        <div>
-            <Script
-                url="https://maps.googleapis.com/maps/api/js?key=AIzaSyCzE_8zg7BQGZgOA2XsI3Xrp_v_POPSIqc&libraries=places"
-                onLoad={handleScriptLoad}
-            />
-            <input style={{backgroundColor:'transparent'}} id='autocomplete' type='text'  value={enteredCity} onChange={onCityChange}/>
-        </div>
-
-        {/*<AutocompleteInput
+        {<AutocompleteInput
             label="City"
             isRequired={false}
             value={props.value}
             onChange={onCityChange}
             type="text"
-        />*/}
+        />}
         <AutocompleteInput
             label="State"
             isRequired={false}

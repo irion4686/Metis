@@ -51,7 +51,9 @@ const Login = (props) => {
       try {
         const response = await fetch('http://localhost:3001/api/login', {
           method: 'POST',
+          mode:'cors',
           body: JSON.stringify(loginInfo),
+          credentials: 'same-origin',
           headers: {
             'Content-Type': 'application/json'
           }
