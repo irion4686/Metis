@@ -6,6 +6,7 @@ import classes from "./login.module.css";
 import styles from "./login.module.css";
 
 const Login = (props) => {
+  const SERVER = 'ec2-100-24-121-48.compute-1.amazonaws.com/';
   const [enteredEmail, setEmail] = useState("");
   const [enteredPassword, setPassword] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(true);
@@ -49,13 +50,12 @@ const Login = (props) => {
         password: enteredPassword
       }
       try {
-        const response = await fetch('http://localhost:3001/api/login', {
+        const response = await fetch(SERVER + 'api/login', {
           method: 'POST',
-          mode:'cors',
           body: JSON.stringify(loginInfo),
-          credentials: 'same-origin',
+          credentials: 'include',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           }
         });
         if (response.ok) {
