@@ -21,6 +21,8 @@ const Signup = (props) => {
     const [isValidConfirmPass, setIsValidConfirmPass] = useState(false);
     const [isValidForm, setIsValidForm] = useState(false);
 
+    const SERVER = 'ec2-44-193-80-73.compute-1.amazonaws.com:3001/';
+
     const onFirstNameChange = (event) => {
         const value = event.target.value;
         setFirstName(value);
@@ -122,7 +124,7 @@ const Signup = (props) => {
             password: enteredPassword
         }
         try {
-            const response = await fetch('http://localhost:3001/api/users/add', {
+            const response = await fetch(SERVER, {
                 method: 'POST',
                 body: JSON.stringify(newClient),
                 headers: {

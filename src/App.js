@@ -5,6 +5,7 @@ import MainPage from './components/main_page/main_page';
 import Signup from './components/signup/signup';
 import Wrapper from './components/helpers/Wrapper';
 
+const SERVER = 'http://ec2-44-193-80-73.compute-1.amazonaws.com:3001/';
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   //const [loggedIn, setLoggedIn] = useState(true);

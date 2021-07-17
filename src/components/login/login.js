@@ -4,9 +4,10 @@ import Input from "../ui/input/Input";
 
 import classes from "./login.module.css";
 import styles from "./login.module.css";
+const validator = require("email-validator");
 
 const Login = (props) => {
-  const SERVER = 'ec2-100-24-121-48.compute-1.amazonaws.com/';
+  const SERVER = 'http://ec2-44-193-80-73.compute-1.amazonaws.com:3001/';
   const [enteredEmail, setEmail] = useState("");
   const [enteredPassword, setPassword] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(true);
@@ -14,8 +15,7 @@ const Login = (props) => {
 
   const onEmailChange = (event) => {
     setEmail(event.target.value);
-    const expression = "^[^@s]+@[^@s.]+.[^@.s]+$";
-    if (!event.target.value.match(expression)) {
+    if (!validator.validate(event.target.value)) {
       setIsValidEmail(false);
       console.log("invalid");
     } else {
@@ -50,12 +50,14 @@ const Login = (props) => {
         password: enteredPassword
       }
       try {
-        const response = await fetch(SERVER + 'api/login', {
+        const url = SERVER + 'api/login';
+        console.log(url);
+        const response = await fetch(url, {
           method: 'POST',
           body: JSON.stringify(loginInfo),
           credentials: 'include',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           }
         });
         if (response.ok) {

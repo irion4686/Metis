@@ -2,8 +2,8 @@
 let controller = new AbortController();
 const signal = controller.signal;
 let isLoading = false;
+const SERVER = 'http://ec2-44-193-80-73.compute-1.amazonaws.com:3001/';
 export async function getSuggestions(address) {
-    const SERVER = 'ec2-100-24-121-48.compute-1.amazonaws.com/';
     try {
         if (isLoading) {
             controller.abort();
@@ -14,7 +14,7 @@ export async function getSuggestions(address) {
         }
         const response = await fetch(SERVER + 'api/addresses/suggestions', {
             //credentials: 'include',
-            credentials: 'same-origin',
+            credentials: 'include',
             method: 'POST',
             mode:'cors',
             signal: signal,
@@ -24,7 +24,7 @@ export async function getSuggestions(address) {
             }
         });
         if (response.ok) {
-            console.log(await response.json());
+            console.log(response.json());
         } else {
             let message = 'Unknown error';
             if (response.status === 409) message = 'User with that email already exists';

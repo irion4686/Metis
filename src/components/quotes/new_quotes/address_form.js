@@ -85,23 +85,26 @@ const AddressForm = (props) => {
             isRequired={false}
             value={props.value}
             onChange={onStreetChange}
-            suggestions={suggestions}
-            id="firstName"
+            suggestions={currentlySelected === 'street' && suggestions}
+            id="street"
             type="text"
         />
-        {<AutocompleteInput
+        <AutocompleteInput
             label="City"
             isRequired={false}
             value={props.value}
             onChange={onCityChange}
+            suggestions={currentlySelected === 'city' && suggestions}
+            id="city"
             type="text"
-        />}
+        />
         <AutocompleteInput
             label="State"
             isRequired={false}
             value={props.value}
             onChange={onStateChange}
-            id="businessName"
+            suggestions={currentlySelected === 'state' && suggestions}
+            id="state"
             type="text"
         />
         <AutocompleteInput
@@ -109,7 +112,8 @@ const AddressForm = (props) => {
             isRequired={false}
             value={props.value}
             onChange={onZipChange}
-            id="email"
+            suggestions={currentlySelected === 'zip' && suggestions}
+            id="zip"
             type="text"
         />
         </Fragment>
