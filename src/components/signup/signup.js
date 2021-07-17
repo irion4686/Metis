@@ -1,12 +1,10 @@
 import classes from "./signup.module.css";
-import styles from "./signup.module.css";
-
-import {useState, useCallback, useEffect} from "react";
+import {useState, useEffect} from "react";
 import Card from "../ui/card/Card";
 import Input from '../ui/input/Input';
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
 
-const Signup = (props) => {
+const Signup = () => {
     const [enteredFirstName, setFirstName] = useState('');
     const [enteredLastName, setLastName] = useState('');
     const [enteredEmail, setEmail] = useState('');
@@ -61,7 +59,6 @@ const Signup = (props) => {
             const value = phoneUtil.parse(countryCode + event.target.value);
             setPhone(event.target.value);
             console.log(event.target.value);
-            const expression = "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$";
             if (value.length === 0 || phoneUtil.isPossibleNumber(value)) {
                 setIsValidPhone(true);
             } else {
@@ -188,8 +185,7 @@ const Signup = (props) => {
                     <button disabled={!isValidForm} type="submit">Register</button>
                 </div>
             </form>
-            <div></div>
-        </Card>
+        </ Card>
     );
 };
 

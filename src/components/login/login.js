@@ -83,13 +83,13 @@ const Login = (props) => {
         />
         <label htmlFor="password">Password</label>
         <Input
-          isValid={isValidPass}
-          value={enteredPassword}
-          onChange={onPasswordChange}
-          id="password"
-          type="password"
+            isValid={isValidPass}
+            value={enteredPassword}
+            onChange={onPasswordChange}
+            id="password"
+            type="password"
         />
-        <a href="#/">Forgot Password?</a>
+        <a href="/#">Forgot Password?</a>
         <div>
           <button type="submit">Log In</button>
         </div>

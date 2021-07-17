@@ -39,7 +39,7 @@ const AddressForm = (props) => {
     }
     let currentlySelected =  selected.NONE;
 
-    if (props.suggestions != undefined && props.suggestions.length > 0) {
+    if (props.suggestions !== undefined && props.suggestions.length > 0) {
 
     }
 
@@ -76,7 +76,7 @@ const AddressForm = (props) => {
             id: enteredId,
         }
         lookupSuggestions();
-    }, [enteredStreet, enteredCity, enteredState, enteredZip, enteredId]);
+    }, [firstRender, enteredStreet, enteredCity, enteredState, enteredZip, enteredId]);
 
 
 

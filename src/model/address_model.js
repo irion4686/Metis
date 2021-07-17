@@ -1,6 +1,5 @@
 const axios = require('axios').default;
-let controller = new AbortController();
-const signal = controller.signal;
+const cancelToken = axios.CancelToken.source();
 let isLoading = false;
 
 
@@ -8,15 +7,16 @@ export async function getSuggestions(address, ctx) {
     const SERVER = ctx.SERVER;
     try {
         if (isLoading) {
-            controller.abort();
-            controller = new AbortController();
-        }
-        else {
+            cancelToken.cancel();
+        } else {
             isLoading = true;
         }
         const url = SERVER + 'api/addresses/suggestions';
         console.log(url);
-        const response = await axios.post(url, {withCredentials:true});
+        const response = await axios.post(url, {
+            withCredentials: true,
+            cancelToken: cancelToken
+        });
         if (response.statusText === 'OK') {
             console.log(response);
         } else {
@@ -30,4 +30,4 @@ export async function getSuggestions(address, ctx) {
     } finally {
         isLoading = false;
     }
-};
+}

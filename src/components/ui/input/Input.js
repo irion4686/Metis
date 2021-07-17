@@ -1,4 +1,3 @@
-import classes from "./Input.module.css";
 import styles from "./Input.module.css";
 
 const Input = (props) => {

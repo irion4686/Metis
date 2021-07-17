@@ -1,4 +1,4 @@
-import Card from "./Card";
+import Card from "../card/Card";
 import classes from "./ErrorModal.module.css";
 import ReactDOM from "react-dom";
 import React from "react";
