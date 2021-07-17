@@ -1,6 +1,7 @@
-import {Fragment, useEffect, useState} from "react"
+import {Fragment, useEffect, useState, useContext } from "react"
 import AutocompleteInput from "../../ui/input/autocomplete_input";
 import { getSuggestions } from '../../../model/address_model';
+import ServerContext from "../../../store/server-context";
 
 const AddressForm = (props) => {
     const [enteredStreet, setEnteredStreet] = useState('');
@@ -9,6 +10,8 @@ const AddressForm = (props) => {
     const [enteredZip, setEnteredZip] = useState('');
     const [enteredId, setEnteredId] = useState('');
     const [firstRender, setFirstRender] = useState(false);
+
+    const servCtx = useContext(ServerContext);
     
     let suggestions = [
     {
@@ -57,7 +60,7 @@ const AddressForm = (props) => {
     }
 
     const lookupSuggestions = () => {
-        suggestions = getSuggestions(address);
+        suggestions = getSuggestions(address, servCtx);
     };
 
     useEffect(() => {

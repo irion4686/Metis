@@ -1,9 +1,11 @@
-
+const axios = require('axios').default;
 let controller = new AbortController();
 const signal = controller.signal;
 let isLoading = false;
-const SERVER = 'http://ec2-44-193-80-73.compute-1.amazonaws.com:3001/';
-export async function getSuggestions(address) {
+
+
+export async function getSuggestions(address, ctx) {
+    const SERVER = ctx.SERVER;
     try {
         if (isLoading) {
             controller.abort();
@@ -12,19 +14,11 @@ export async function getSuggestions(address) {
         else {
             isLoading = true;
         }
-        const response = await fetch(SERVER + 'api/addresses/suggestions', {
-            //credentials: 'include',
-            credentials: 'include',
-            method: 'POST',
-            mode:'cors',
-            signal: signal,
-            body: JSON.stringify(address),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        if (response.ok) {
-            console.log(response.json());
+        const url = SERVER + 'api/addresses/suggestions';
+        console.log(url);
+        const response = await axios.post(url, {withCredentials:true});
+        if (response.statusText === 'OK') {
+            console.log(response);
         } else {
             let message = 'Unknown error';
             if (response.status === 409) message = 'User with that email already exists';

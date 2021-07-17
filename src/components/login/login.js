@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import ServerContext from "../../store/server-context";
 import Card from "../ui/card/Card";
 import Input from "../ui/input/Input";
 
 import classes from "./login.module.css";
 import styles from "./login.module.css";
 const validator = require("email-validator");
+const axios = require('axios').default;
 
 const Login = (props) => {
-  const SERVER = 'http://ec2-44-193-80-73.compute-1.amazonaws.com:3001/';
+  const servCtx = useContext(ServerContext);
+  const SERVER = servCtx.SERVER;
   const [enteredEmail, setEmail] = useState("");
   const [enteredPassword, setPassword] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(true);
@@ -51,17 +54,12 @@ const Login = (props) => {
       }
       try {
         const url = SERVER + 'api/login';
-        console.log(url);
-        const response = await fetch(url, {
-          method: 'POST',
-          body: JSON.stringify(loginInfo),
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-        if (response.ok) {
+        let response = await axios.post(url, loginInfo, {withCredentials: true});
+        console.log(response);
+        if (response.status ) {
+
           props.onLogIn(true);
+
         } else {
           console.log("Incorrect username and/or password");
         }

@@ -4,9 +4,13 @@ import './App.css';
 import MainPage from './components/main_page/main_page';
 import Signup from './components/signup/signup';
 import Wrapper from './components/helpers/Wrapper';
+import ServerContext from "./store/server-context";
+import dotenv from 'dotenv';
 
 const SERVER = 'http://ec2-44-193-80-73.compute-1.amazonaws.com:3001/';
 function App() {
+  dotenv.config();
+  console.log(process.env.REACT_APP_ENV);
   const [loggedIn, setLoggedIn] = useState(false);
   //const [loggedIn, setLoggedIn] = useState(true);
 
@@ -33,12 +37,11 @@ function App() {
   };
 
   return (
-    <Wrapper>
-      {!loggedIn && !signup && <Login onSignup={signupHandler} onLogIn={loginHandler}/>}
-      {!loggedIn && signup && <Signup onSignup={loginHandler} />}
-      {loggedIn && <MainPage onLogOut={loginHandler} />}
-    </Wrapper>
-    
+      <Wrapper>
+        {!loggedIn && !signup && <Login onSignup={signupHandler} onLogIn={loginHandler}/>}
+        {!loggedIn && signup && <Signup onSignup={loginHandler} />}
+        {loggedIn && <MainPage onLogOut={loginHandler} />}
+      </Wrapper>
   );
 }
 
