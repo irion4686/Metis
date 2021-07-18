@@ -55,13 +55,14 @@ const ClientForm = (props) => {
         <div>
             <h2>Client</h2>
             <AutocompleteInput
-            label="First Name"
-            isRequired={false}
-            value={props.value}
-            onChange={onFirstNameChange}
-            suggestions={firstNameSuggestions}
-            id="firstName"
-            type="text"
+                label="First Name"
+                isRequired={false}
+                value={props.value}
+                onChange={onFirstNameChange}
+                suggestions={firstNameSuggestions}
+                suggestionType='client'
+                id="firstName"
+                type="text"
         />
         <AutocompleteInput
             label="Last Name"

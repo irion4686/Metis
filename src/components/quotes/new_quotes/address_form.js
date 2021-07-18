@@ -127,7 +127,7 @@ const AddressForm = (props) => {
 
 
     return (
-        <Fragment>
+        <div>
             <h2>{props.addressType}</h2>
             <AutocompleteInput
                 label="Street"
@@ -157,16 +157,16 @@ const AddressForm = (props) => {
             id="state"
             type="text"
         />
-        <AutocompleteInput
-            label="Zipcode"
-            isRequired={false}
-            value={props.value}
-            onChange={onZipChange}
-            suggestions={currentlySelected === 'zip' && suggestions}
-            id="zip"
-            type="text"
-        />
-        </Fragment>
+            <AutocompleteInput
+                label="Zipcode"
+                isRequired={false}
+                value={props.value}
+                onChange={onZipChange}
+                suggestions={currentlySelected === 'zip' && suggestions}
+                id="zip"
+                type="text"
+            />
+        </div>
     );
 }
 

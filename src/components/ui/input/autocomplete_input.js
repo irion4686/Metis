@@ -1,6 +1,7 @@
 import classes from "./autocomplete_input.module.css";
 import styles from "./autocomplete_input.module.css";
 import address_autocomplete_item from "./address_autocomplete_item";
+import client_autocomplete_item from "./client_autocomplete_item";
 
 const AutocompleteInput = (props) => {
   let suggestions = []
@@ -8,14 +9,10 @@ const AutocompleteInput = (props) => {
     console.log('test');
     if (props.suggestionType === 'address') {
       console.log('address');
-      suggestions = props.suggestions.map((suggestion) => address_autocomplete_item(suggestion));
-    } else {
-      suggestions = props.suggestions.map((client) => (
-          <li key={client.id}>
-            <button><label>{client.firstName} {client.lastName}<span> | </span>{client.businessName}
-              <span> | </span>{client.email}<span> | </span>{client.phone}</label></button>
-          </li>
-      ))
+      suggestions = props.suggestions.map(suggestion => address_autocomplete_item(suggestion));
+    }
+    if (props.suggestionType === 'client') {
+      suggestions = props.suggestions.map(client => client_autocomplete_item(client));
     }
   }
   return (
