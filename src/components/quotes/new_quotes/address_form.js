@@ -94,12 +94,12 @@ const AddressForm = (props) => {
 
     const onStateChange = event => {
         setEnteredState(event.target.value);
-        currentlySelected(selected.STATE);
+        setCurrentlySelected(selected.STATE);
     }
 
     const onZipChange = event => {
         setEnteredZip(+event.target.value);
-        currentlySelected(selected.ZIP);
+        setCurrentlySelected(selected.ZIP);
     }
 
 

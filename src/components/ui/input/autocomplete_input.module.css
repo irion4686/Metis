@@ -3,7 +3,7 @@
   display: inline-block;
   margin-top: 5px;
   margin-bottom: 10px;
-  padding: 1rem;
+  padding: .5rem;
   width: 100%;
   max-width: 50rem;
   border-radius: 12px;
@@ -12,7 +12,7 @@
 
   button {
     background-color: transparent;
-    width: 90%;
+    width: 100%;
     text-align: left;
     margin: 2px;
   }
@@ -33,13 +33,14 @@
     color: whitesmoke;
     width: 100%;
     text-align: left !important;
-    font-size: large;
+    font-size: 1em;
   }
   
   .input input {
     font: inherit;
-    font-size: larger;
+    font-size: 1rem;
     color: whitesmoke;
+    background-color: #363333;
     width: 100%;
     outline-color: 1px solid rgb(46, 75, 163);
     text-align: start;
@@ -69,7 +70,7 @@
   }
   
   .input input:-webkit-autofill, input:focus:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 100px rgb(46, 46, 46) inset;
+    -webkit-box-shadow: 0 0 0 100px #363333 inset;
     -webkit-text-fill-color: whitesmoke !important;
   }
   

@@ -3,9 +3,9 @@
     width: 100%;
 }
 
-div {
-    width: 100%;
-    text-align: left;
+.lines {
+    display: flex;
+    flex-direction: row;
 }
 
 .buttons {
@@ -13,9 +13,8 @@ div {
     text-align: left;
 }
 
-.business {
-    margin-left: 15px;
+.end {
     text-align: end !important;
     width: 100%;
-    color: #848489;
+    color: #a4a4a8;
 }

@@ -1,7 +1,15 @@
 .background {
+    padding: 00px 10px 0px 10px;
     height: 100%;
     width: 100%;
     display: flex;
     flex-flow: column;
     flex-grow: 1;
+}
+
+div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }

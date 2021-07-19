@@ -48,12 +48,12 @@ const NewQuote = () => {
 
   return (
     <div className={classes.new_quote}>
-      <form>
-        <ClientForm classname={classes.form} onClientChange={onClientChange} suggestions={DUMMY_CLIENTS}/>
+      <form autoComplete='off'>
+        <ClientForm onClientChange={onClientChange} suggestions={DUMMY_CLIENTS}/>
         <AddressForm addressType="Origin"/>
-        <AddressForm addressType="Destination" />
+        <AddressForm addressType="Destination"/>
         <QuoteDetailsForm distance={600}/>
-        <QuotePrice />
+        <QuotePrice/>
         <div className={classes.actionDiv}>
           <button className={classes.action}><label>Clear</label></button>
         </div>
