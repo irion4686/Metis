@@ -7,8 +7,8 @@ import Wrapper from './components/helpers/Wrapper';
 
 
 function App() {
+  //const [loggedIn, setLoggedIn] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
-  //const [loggedIn, setLoggedIn] = useState(true);
 
   const [signup, setSignUp] = useState(false);
 

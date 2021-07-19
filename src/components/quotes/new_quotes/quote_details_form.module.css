@@ -28,3 +28,22 @@
   .dropdown select:focus {
     outline: none;
   }
+
+  .stalls {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stallInput {
+    margin : 5px 0px;
+    display: flex;
+    flex-direction: row;
+    background-color: transparent;
+    color: transparent;
+    min-height: 3em;
+  }
+
+  input {
+    background-color: transparent;
+  }

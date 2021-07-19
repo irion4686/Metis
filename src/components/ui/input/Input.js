@@ -7,6 +7,7 @@ const Input = (props) => {
       type={props.type || "text"}
       onChange={props.onChange}
       value={props.value}
+      autoComplete='off'
       id={props.id}
     />
   );

@@ -2,6 +2,7 @@ import classes from "./new_quote.module.css";
 import ClientForm from "./client_form";
 import AddressForm from "./address_form";
 import QuoteDetailsForm from "./quote_details_form";
+import QuotePrice from "./quote_price_form";
 
 const NewQuote = () => {
 
@@ -52,6 +53,13 @@ const NewQuote = () => {
         <AddressForm addressType="Origin"/>
         <AddressForm addressType="Destination" />
         <QuoteDetailsForm distance={600}/>
+        <QuotePrice />
+        <div className={classes.actionDiv}>
+          <button className={classes.action}><label>Clear</label></button>
+        </div>
+        <div className={classes.actionDiv}>
+          <button className={classes.action}><label>Submit</label></button>
+        </div>
       </form>
     </div>
   );

@@ -24,6 +24,7 @@ const AutocompleteInput = (props) => {
       onChange={props.onChange}
       value={props.value}
       id={props.id}
+      autoComplete='off'
     />
     <ul>{suggestions}</ul>
     </div>

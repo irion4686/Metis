@@ -12,6 +12,22 @@ const QuoteDetailsForm = (props) => {
                 <option>Specific Date(s)</option>
                 <option></option>
             </select>
+            <div className={classes.stalls}>
+                <h2>Number of stalls</h2>
+                <div className={classes.stallInput}>
+                    <label>Single Stalls</label>
+                    <input type='number'/>
+                </div>
+                <div className={classes.stallInput}>
+                    <label>Double Stalls</label>
+                    <input type='number'/>
+                </div>
+                <div className={classes.stallInput}>
+                    <label>Box Stalls</label>
+                    <input type='number'/>
+                </div>
+                
+            </div>
         </div>
     );
 };
