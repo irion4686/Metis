@@ -1,5 +1,9 @@
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import AutocompleteInput from "../../ui/input/autocomplete_input";
+
+const emailValidator = require("email-validator");
+const GooglePhone = require('google-libphonenumber');
+const phoneUtil = GooglePhone.PhoneNumberUtil.getInstance();
 
 const ClientForm = (props) => {
     const selected = {
@@ -10,14 +14,6 @@ const ClientForm = (props) => {
         PHONE: 'phone',
         NONE: 'none'
     }
-    const [client, setClient] = useState({
-        firstName: "",
-        lastName: "",
-        businessName: "",
-        email: "",
-        phone: "",
-        id: "",
-    });
 
     let suggestions = [
         {
@@ -30,13 +26,21 @@ const ClientForm = (props) => {
         },
     ]
     const [firstNameValid, setFirstNameValid] = useState(false);
+    const [emailIsValid, setEmailValid] = useState(false);
+    const [phoneIsValid, setPhoneValid] = useState(false);
     const [currentlySelected, setCurrentlySelected] = useState(selected.NONE);
+    const [enteredFirstName, setFirstName] = useState('');
+    const [enteredLastName, setLastName] = useState('');
+    const [enteredBusinessName, setBusinessName] = useState('');
+    const [enteredEmail, setEmail] = useState('');
+    const [enteredPhone, setPhone] = useState('');
+    const [currentCustId, setCustId] = useState(0);
 
     if (props.suggestions.length > 0) {
         suggestions = props.suggestions;
     }
     const onFocusHandler = (id) => {
-        switch(id) {
+        switch (id) {
             case 'first':
                 setCurrentlySelected(selected.FIRST);
             case 'last':
@@ -49,43 +53,70 @@ const ClientForm = (props) => {
                 setCurrentlySelected(selected.PHONE);
         }
     }
-    const lostFocusHandler = () => {
+    const lostFocusHandler = (id) => {
         setCurrentlySelected(selected.NONE);
+        if (id === 'phone') {
+            try {
+                const countryCode = '+1'
+                const parsed = phoneUtil.parse(countryCode + enteredPhone)
+                const formatted = phoneUtil.format(parsed, GooglePhone.PhoneNumberFormat.NATIONAL);
+                setPhone(formatted);
+            } catch (error) {
+                setPhoneValid(false);
+            }
+        }
     }
 
     const onFirstNameChange = event => {
         setCurrentlySelected(selected.FIRST);
-        let input = event.target.value;
-        client.firstName = input;
-        props.onClientChange(client);
-        if (input.trim().length > 0) {
-            setFirstNameValid(true)
-        }
+        const input = event.target.value;
+        setFirstName(input);
+        console.log(input);
+        setFirstNameValid(input.trim().length !== 0)
     }
 
     const onLastNameChange = event => {
         setCurrentlySelected(selected.LAST);
-        client.lastName = event.target.value;
-        props.onClientChange(client);
+        setLastName(event.target.value);
     }
 
     const onBusinessNameChange = event => {
         setCurrentlySelected(selected.BUSINESS);
-        client.businessName = event.target.value;
-        props.onClientChange(client);
+        setBusinessName(event.target.value);
     }
 
     const onEmailChange = event => {
+        const input = event.target.value;
         setCurrentlySelected(selected.EMAIL);
-        client.email = event.target.value;
-        props.onClientChange(client);
+        setEmail(input);
+        setEmailValid(emailValidator.validate(input));
     }
 
     const onPhoneChange = event => {
+        const input = event.target.value;
         setCurrentlySelected(selected.PHONE);
-        client.phone = event.target.value;
-        props.onClientChange(client);
+        setPhone(input);
+        const countryCode = '+1'
+        try {
+            const value = phoneUtil.parse(countryCode + input);
+            setPhoneValid(phoneUtil.isPossibleNumber(value));
+        } catch (error) {
+            setPhoneValid(false);
+        }
     }
+
+    useEffect(() => {
+        const client = {
+            firstName: enteredFirstName,
+            lastName: enteredLastName,
+            businessName: enteredBusinessName,
+            email: enteredEmail,
+            phone: enteredPhone,
+            id: "",
+        };
+        props.onClientChange(client);
+        props.isValid(firstNameValid && emailIsValid && phoneIsValid)
+    }, [enteredFirstName, enteredLastName, enteredBusinessName, enteredEmail, enteredPhone, firstNameValid, emailIsValid, phoneIsValid]);
 
     return (
         <div>
@@ -128,6 +159,7 @@ const ClientForm = (props) => {
         />
         <AutocompleteInput
             label="Email"
+            isValid={emailIsValid}
             isRequired={true}
             value={props.value}
             onChange={onEmailChange}
@@ -140,8 +172,9 @@ const ClientForm = (props) => {
         />
         <AutocompleteInput
             label="Phone"
+            isValid={phoneIsValid}
             isRequired={true}
-            value={props.value}
+            value={enteredPhone}
             onChange={onPhoneChange}
             suggestions={currentlySelected === 'phone' && suggestions}
             onFocus={onFocusHandler}

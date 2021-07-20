@@ -5,13 +5,14 @@
     display: flex;
     flex-flow: column;
     flex-grow: 1;
+    align-items: stretch;
 }
 
 div {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: stretch;
+    align-items: center;
 }
 label {
     font-size: .5rem;
