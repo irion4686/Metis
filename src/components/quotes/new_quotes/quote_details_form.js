@@ -5,6 +5,7 @@ const QuoteDetailsForm = (props) => {
         <div className={classes.details}>
             <label>Distance: {props.distance}</label>
             <select className={classes.dropdown} >
+                <option>Select Time Frame</option>
                 <option>Unknown</option>
                 <option>ASAP</option>
                 <option>Within 30 Days</option>

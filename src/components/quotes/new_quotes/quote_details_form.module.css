@@ -3,13 +3,14 @@
     display:flex;
     flex-flow: column;
     margin-bottom: 10px;
-    width: 90%;
+    width: 100%;
     flex-grow: 0;
     padding: 8px;
+    border-radius: 12px;
 }
 
 .details label {
-    font-size: 28px;
+    font-size: 1.25em;
 }
 
 .dropdown {
@@ -33,17 +34,24 @@
     margin: 10px;
     display: flex;
     flex-direction: column;
+    border-radius: 12px;
+    width: 100%;
+    
   }
 
   .stallInput {
     margin : 5px 0px;
     display: flex;
-    flex-direction: row;
-    background-color: transparent;
+    flex-direction: column;
+    background-color: #363333;
     color: transparent;
+    width: 100%;
     min-height: 3em;
+    padding: 5px 5px;
+    border-radius: 12px;
   }
 
   input {
     background-color: transparent;
+    border-radius: 12px;
   }
