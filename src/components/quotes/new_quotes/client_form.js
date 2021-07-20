@@ -1,5 +1,6 @@
 import {useState} from "react"
 import AutocompleteInput from "../../ui/input/autocomplete_input";
+
 const ClientForm = (props) => {
     const selected = {
         FIRST: 'first',
@@ -18,7 +19,7 @@ const ClientForm = (props) => {
         id: "",
     });
 
-    let firstNameSuggestions = [
+    let suggestions = [
         {
             firstName: "",
             lastName: "",
@@ -32,7 +33,24 @@ const ClientForm = (props) => {
     const [currentlySelected, setCurrentlySelected] = useState(selected.NONE);
 
     if (props.suggestions.length > 0) {
-        firstNameSuggestions = props.suggestions;
+        suggestions = props.suggestions;
+    }
+    const onFocusHandler = (id) => {
+        switch(id) {
+            case 'first':
+                setCurrentlySelected(selected.FIRST);
+            case 'last':
+                setCurrentlySelected(selected.LAST);
+            case 'business':
+                setCurrentlySelected(selected.BUSINESS);
+            case 'email':
+                setCurrentlySelected(selected.EMAIL);
+            case 'phone':
+                setCurrentlySelected(selected.PHONE);
+        }
+    }
+    const lostFocusHandler = () => {
+        setCurrentlySelected(selected.NONE);
     }
 
     const onFirstNameChange = event => {
@@ -78,8 +96,10 @@ const ClientForm = (props) => {
                 isRequired={true}
                 value={props.value}
                 onChange={onFirstNameChange}
-                suggestions={firstNameSuggestions}
+                suggestions={currentlySelected === 'first' && suggestions}
                 suggestionType='client'
+                onFocus={onFocusHandler}
+                onLostFocus={lostFocusHandler}
                 id="firstName"
                 type="text"
             />
@@ -88,6 +108,10 @@ const ClientForm = (props) => {
                 isRequired={false}
                 value={props.value}
                 onChange={onLastNameChange}
+                suggestions={currentlySelected === 'last' && suggestions}
+                onFocus={onFocusHandler}
+                onLostFocus={lostFocusHandler}
+                suggestionType='client'
                 type="text"
             />
             <AutocompleteInput
@@ -95,7 +119,11 @@ const ClientForm = (props) => {
                 isRequired={false}
                 value={props.value}
                 onChange={onBusinessNameChange}
-                id="businessName"
+                suggestions={currentlySelected === 'business' && suggestions}
+                onFocus={onFocusHandler}
+                onLostFocus={lostFocusHandler}
+                suggestionType='client'
+                id="business"
             type="text"
         />
         <AutocompleteInput
@@ -103,6 +131,10 @@ const ClientForm = (props) => {
             isRequired={true}
             value={props.value}
             onChange={onEmailChange}
+            suggestions={currentlySelected === 'email' && suggestions}
+            onFocus={onFocusHandler}
+            onLostFocus={lostFocusHandler}
+            suggestionType='client'
             id="email"
             type="text"
         />
@@ -111,6 +143,10 @@ const ClientForm = (props) => {
             isRequired={true}
             value={props.value}
             onChange={onPhoneChange}
+            suggestions={currentlySelected === 'phone' && suggestions}
+            onFocus={onFocusHandler}
+            onLostFocus={lostFocusHandler}
+            suggestionType='client'
             id="phone"
             type="text"
         />

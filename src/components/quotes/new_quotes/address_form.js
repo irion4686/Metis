@@ -78,10 +78,6 @@ const AddressForm = (props) => {
         id: ''
     }
 
-    if (props.suggestions !== undefined && props.suggestions.length > 0) {
-
-    }
-
     const onStreetChange = event => {
         setEnteredStreet(event.target.value);
         setCurrentlySelected(selected.STREET);
@@ -100,6 +96,24 @@ const AddressForm = (props) => {
     const onZipChange = event => {
         setEnteredZip(+event.target.value);
         setCurrentlySelected(selected.ZIP);
+    }
+
+    const lostFocusHandler = () => {
+        setCurrentlySelected(selected.NONE);
+    }
+
+    const focusHandler = (component) => {
+        switch (component) {
+            case 'street':
+                setCurrentlySelected(selected.STREET);
+            case 'city':
+                setCurrentlySelected(selected.CITY);
+            case 'state':
+                setCurrentlySelected(selected.STATE);
+            case 'zip': 
+                setCurrentlySelected(selected.ZIP);
+        }
+        
     }
 
 
@@ -136,6 +150,8 @@ const AddressForm = (props) => {
                 onChange={onStreetChange}
                 suggestions={currentlySelected === 'street' && dummySuggestions}
                 suggestionType='address'
+                onLostFocus={lostFocusHandler}
+                onFocus={focusHandler}
                 id="street"
                 type="text"
             />
@@ -144,8 +160,10 @@ const AddressForm = (props) => {
                 isRequired={false}
                 value={props.value}
                 onChange={onCityChange}
-                suggestions={currentlySelected === 'city' && suggestions}
+                suggestions={currentlySelected === 'city' && dummySuggestions}
                 id="city"
+                onLostFocus={lostFocusHandler}
+                onFocus={focusHandler}
             type="text"
         />
         <AutocompleteInput
@@ -153,8 +171,10 @@ const AddressForm = (props) => {
             isRequired={false}
             value={props.value}
             onChange={onStateChange}
-            suggestions={currentlySelected === 'state' && suggestions}
+            suggestions={currentlySelected === 'state' && dummySuggestions}
             id="state"
+            onLostFocus={lostFocusHandler}
+            onFocus={focusHandler}
             type="text"
         />
             <AutocompleteInput
@@ -162,8 +182,10 @@ const AddressForm = (props) => {
                 isRequired={false}
                 value={props.value}
                 onChange={onZipChange}
-                suggestions={currentlySelected === 'zip' && suggestions}
+                suggestions={currentlySelected === 'zip' && dummySuggestions}
                 id="zip"
+                onLostFocus={lostFocusHandler}
+                onFocus={focusHandler}
                 type="text"
             />
         </div>

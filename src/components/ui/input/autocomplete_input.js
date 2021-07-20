@@ -4,10 +4,9 @@ import address_autocomplete_item from "./address_autocomplete_item";
 import client_autocomplete_item from "./client_autocomplete_item";
 
 const AutocompleteInput = (props) => {
-  console.log("valid: ", props.isValid);
+  const id = props.id;
   let suggestions = []
   if (props.suggestions !== undefined && props.suggestions.length > 0) {
-    console.log('test');
     if (props.suggestionType === 'address') {
       console.log('address');
       suggestions = props.suggestions.map(suggestion => address_autocomplete_item(suggestion));
@@ -16,10 +15,23 @@ const AutocompleteInput = (props) => {
       suggestions = props.suggestions.map(client => client_autocomplete_item(client));
     }
   }
+  const lostFocusHandler = () => {
+    console.log("lost focus");
+    if (props.onLostFocus) {
+    props.onLostFocus(id);
+    }
+  }
+
+  const focusHandler = () => {
+    console.log("got focus")
+    if (props.onFocus) {
+      props.onFocus(id);
+    }
+  }
 
   const onChangeHandler = (event) => {
-    props.onChange(event);
-    console.log('Valid: ' + props.isValid);
+      props.onChange(event);
+      console.log('Valid: ' + props.isValid);
   }
   return (
       <div className={classes.input}>
@@ -30,6 +42,8 @@ const AutocompleteInput = (props) => {
             onChange={onChangeHandler}
             value={props.value}
             id={props.id}
+            onBlur={lostFocusHandler}
+            onFocus={focusHandler}
             autoComplete='new-password'
         />
         <ul>{suggestions}</ul>
