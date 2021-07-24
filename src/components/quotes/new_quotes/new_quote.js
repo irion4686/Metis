@@ -38,7 +38,8 @@ const NewQuote = () => {
     setDestValid(event);
   }
   const validDetailsHandler = event => {
-    setDetailsValid(event);
+    console.log('Details Valid: ', event);
+      setDetailsValid(event);
   }
   const validPricingHandler = event => {
     setPricingValid(event);
