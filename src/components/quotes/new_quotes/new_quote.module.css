@@ -10,6 +10,16 @@
     padding-right: 5px;
 }
 
+.new_quote button {
+    border-radius: 12px;
+}
+
+.new_quote input {
+    text-align: center;
+    background-color: transparent;
+    border-radius: 12px;
+}
+
 .new_quote h2 {
     font-size: 1.5rem !important;
 }
