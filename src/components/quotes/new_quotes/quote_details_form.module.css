@@ -1,16 +1,19 @@
 
 .details {
-    display:flex;
+    display: flex;
     flex-flow: column;
     margin-bottom: 10px;
     width: 100%;
     flex-grow: 0;
     padding: 8px;
     border-radius: 12px;
+    text-align: center;
 }
 
-.details label {
-    font-size: 1.25em;
+.distance {
+    font-size: 1.5em;
+    text-align: center !important;
+    padding: 20px;
 }
 
 .dropdown {

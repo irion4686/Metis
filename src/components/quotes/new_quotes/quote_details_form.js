@@ -3,8 +3,8 @@ import classes from './quote_details_form.module.css';
 const QuoteDetailsForm = (props) => {
     return (
         <div className={classes.details}>
-            <label>Distance: {props.distance}</label>
-            <select className={classes.dropdown} >
+            <label className={classes.distance}>Distance: {props.distance} mi</label>
+            <select className={classes.dropdown}>
                 <option>Select Time Frame</option>
                 <option>Unknown</option>
                 <option>ASAP</option>

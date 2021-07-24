@@ -3,7 +3,9 @@ import ClientForm from "./client_form";
 import AddressForm from "./address_form";
 import QuoteDetailsForm from "./quote_details_form";
 import QuotePrice from "./quote_price_form";
-import { useState } from "react";
+import {useEffect, useState, useContext} from "react";
+import {getDistance} from "../../../model/address_model";
+import ServerContext from "../../../store/server-context";
 
 const NewQuote = () => {
   const [clientIsValid, setClientValid] = useState(false);
@@ -11,6 +13,11 @@ const NewQuote = () => {
   const [destValid, setDestValid] = useState(false);
   const [detailsValid, setDetailsValid] = useState(false);
   const [pricingValid, setPricingValid] = useState(false);
+  const [originAddress, setOrigin] = useState({});
+  const [destinationAddress, setDestination] = useState({});
+  const [distance, setDistance] = useState('');
+  const [mapURL, setMapURL] = useState('');
+  const servCtx = useContext(ServerContext);
 
   let client = {
     firstName: "",
@@ -20,33 +27,6 @@ const NewQuote = () => {
     phone: "",
     id: "",
   };
-
-  const DUMMY_CLIENTS = [
-    {
-      firstName: "Cody",
-      lastName: "Irion",
-      businessName: "Eclipse Equine Transport",
-      email: "cody@eclipseequinetransport.com",
-      phone: "919-923-2259",
-      id: "01",
-    },
-    {
-      firstName: "Corey",
-      lastName: "Overcash",
-      businessName: "",
-      email: "coreyovercash@gmail.com",
-      phone: "919-599-8498",
-      id: "69",
-    },
-    {
-      firstName: "Colin",
-      lastName: "Farrel",
-      businessName: "Beverly Hills Farms",
-      email: "bigshot@gmail.com",
-      phone: "919-923-2259",
-      id: "202",
-    },
-  ];
 
   const validClientHandler = event => {
     setClientValid(event);
@@ -76,22 +56,49 @@ const NewQuote = () => {
       console.log('Cant submit');
     }
   }
+  const convertAddressToQuery = (address) => {
+    let result = address.id.trim().length > 0 ? 'place_id:' + address.id : ((address.street + ' ' + address.city + ' ' + address.state + ' ' + address.zip).trim());
+    return result.split(' ').join('%20');
+  }
+
+  const refreshMap = (validOrigin, validDestination) => {
+    if (validOrigin && validDestination) {
+      const originQuery = convertAddressToQuery(originAddress);
+      const destinationQuery = convertAddressToQuery(destinationAddress);
+      setMapURL(`https://www.google.com/maps/embed/v1/directions?origin=${originQuery}&destination=${destinationQuery}&key=AIzaSyDStzaI2_E0rwxaq0EcKO9251VVDLnYuac`);
+    }
+  }
+
+  useEffect(async () => {
+    const validOrigin = originAddress.id || originAddress.zip || originAddress.city && originAddress.state ? true : false;
+    const validDestination = destinationAddress.id || destinationAddress.zip || destinationAddress.city && destinationAddress.state ? true : false;
+    if (validOrigin && validDestination) {
+      try {
+        const result = await getDistance(originAddress, destinationAddress, servCtx);
+        setDistance(result);
+        refreshMap(validOrigin, validDestination);
+      } catch (err) {
+        console.log('Unable to find distance!');
+      }
+    }
+  }, [originAddress, destinationAddress]);
 
   return (
-    <div className={classes.new_quote}>
-      <form autoComplete='off' onSubmit={submitHandler}>
-        <ClientForm onClientChange={onClientChange} isValid={validClientHandler} suggestions={DUMMY_CLIENTS}/>
-        <AddressForm isValid={validOriginHandler} addressType="Origin"/>
-        <AddressForm isValid={validDestHandler} addressType="Destination"/>
-        <QuoteDetailsForm isValid={validDetailsHandler} distance={600}/>
-        <QuotePrice isValid={validPricingHandler}/>
-        <div className={classes.actionDiv}>
-          <button type='submit' className={classes.action}><label>Clear</label></button>
-        </div>
-        <div className={classes.actionDiv}>
-          <button className={classes.action}><label>Submit</label></button>
-        </div>
-      </form>
+      <div className={classes.new_quote}>
+        <form autoComplete='off' onSubmit={submitHandler}>
+          <ClientForm onClientChange={onClientChange} isValid={validClientHandler}/>
+          <AddressForm isValid={validOriginHandler} address={setOrigin} addressType="Origin"/>
+          <AddressForm isValid={validDestHandler} address={setDestination} addressType="Destination"/>
+          <iframe loading='lazy' allowFullScreen src={mapURL}/>
+          <QuoteDetailsForm isValid={validDetailsHandler} distance={+distance}/>
+          <QuotePrice isValid={validPricingHandler}/>
+          <div className={classes.actionDiv}>
+            <button type='submit' className={classes.action}><label>Clear</label></button>
+          </div>
+          <div className={classes.actionDiv}>
+            <button className={classes.action}><label>Submit</label></button>
+          </div>
+        </form>
     </div>
   );
 };

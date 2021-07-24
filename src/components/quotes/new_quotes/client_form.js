@@ -1,5 +1,7 @@
-import {useState, useEffect} from "react"
+import {useState, useEffect, useContext, useCallback} from "react"
 import AutocompleteInput from "../../ui/input/autocomplete_input";
+import ClientModel, {getSuggestions} from '../../../model/client_model';
+import ServerContext from "../../../store/server-context";
 
 const emailValidator = require("email-validator");
 const GooglePhone = require('google-libphonenumber');
@@ -15,16 +17,7 @@ const ClientForm = (props) => {
         NONE: 'none'
     }
 
-    let suggestions = [
-        {
-            firstName: "",
-            lastName: "",
-            businessName: "",
-            email: "",
-            phone: "",
-            id: "",
-        },
-    ]
+    const [suggestions, setSuggestions] = useState([]);
     const [firstNameValid, setFirstNameValid] = useState(false);
     const [emailIsValid, setEmailValid] = useState(false);
     const [phoneIsValid, setPhoneValid] = useState(false);
@@ -34,11 +27,9 @@ const ClientForm = (props) => {
     const [enteredBusinessName, setBusinessName] = useState('');
     const [enteredEmail, setEmail] = useState('');
     const [enteredPhone, setPhone] = useState('');
-    const [currentCustId, setCustId] = useState(0);
+    const [currentCustId, setCurrentCustId] = useState(0);
+    const servCtx = useContext(ServerContext);
 
-    if (props.suggestions.length > 0) {
-        suggestions = props.suggestions;
-    }
     const onFocusHandler = (id) => {
         switch (id) {
             case 'first':
@@ -53,17 +44,21 @@ const ClientForm = (props) => {
                 setCurrentlySelected(selected.PHONE);
         }
     }
+    const formatPhone = () => {
+        try {
+            const countryCode = '+1'
+            const parsed = phoneUtil.parse(countryCode + enteredPhone)
+            const formatted = phoneUtil.format(parsed, GooglePhone.PhoneNumberFormat.NATIONAL);
+            setPhone(formatted);
+        } catch (error) {
+            console.log('error: ', error);
+            setPhoneValid(false);
+        }
+    }
     const lostFocusHandler = (id) => {
         setCurrentlySelected(selected.NONE);
         if (id === 'phone') {
-            try {
-                const countryCode = '+1'
-                const parsed = phoneUtil.parse(countryCode + enteredPhone)
-                const formatted = phoneUtil.format(parsed, GooglePhone.PhoneNumberFormat.NATIONAL);
-                setPhone(formatted);
-            } catch (error) {
-                setPhoneValid(false);
-            }
+            formatPhone();
         }
     }
 
@@ -71,7 +66,6 @@ const ClientForm = (props) => {
         setCurrentlySelected(selected.FIRST);
         const input = event.target.value;
         setFirstName(input);
-        console.log(input);
         setFirstNameValid(input.trim().length !== 0)
     }
 
@@ -105,19 +99,33 @@ const ClientForm = (props) => {
         }
     }
 
-    useEffect(() => {
+    const lookupSuggestions = useCallback(async (client) => {
+        return await getSuggestions(client, servCtx);
+    }, []);
+
+    useEffect(async () => {
         const client = {
             firstName: enteredFirstName,
             lastName: enteredLastName,
             businessName: enteredBusinessName,
             email: enteredEmail,
             phone: enteredPhone,
-            id: "",
+            id: '',
         };
         props.onClientChange(client);
-        props.isValid(firstNameValid && emailIsValid && phoneIsValid)
-    }, [enteredFirstName, enteredLastName, enteredBusinessName, enteredEmail, enteredPhone, firstNameValid, emailIsValid, phoneIsValid]);
+        props.isValid(firstNameValid && emailIsValid && phoneIsValid);
+        setSuggestions(await lookupSuggestions(client));
+        formatPhone();
+    }, [lookupSuggestions, enteredFirstName, enteredLastName, enteredBusinessName, enteredEmail, enteredPhone, firstNameValid, emailIsValid, phoneIsValid]);
 
+    const onSelectionHandler = (client) => {
+        setFirstName(client.firstName);
+        setLastName(client.lastName);
+        setBusinessName(client.businessName);
+        setEmail(client.email);
+        setPhone(client.phone);
+        setCurrentCustId(client.id);
+    }
     return (
         <div>
             <h2>Client</h2>
@@ -125,10 +133,11 @@ const ClientForm = (props) => {
                 label="First Name"
                 isValid={firstNameValid}
                 isRequired={true}
-                value={props.value}
+                value={enteredFirstName}
                 onChange={onFirstNameChange}
                 suggestions={currentlySelected === 'first' && suggestions}
                 suggestionType='client'
+                onSelection={onSelectionHandler}
                 onFocus={onFocusHandler}
                 onLostFocus={lostFocusHandler}
                 id="firstName"
@@ -137,7 +146,7 @@ const ClientForm = (props) => {
             <AutocompleteInput
                 label="Last Name"
                 isRequired={false}
-                value={props.value}
+                value={enteredLastName}
                 onChange={onLastNameChange}
                 suggestions={currentlySelected === 'last' && suggestions}
                 onFocus={onFocusHandler}
@@ -148,20 +157,20 @@ const ClientForm = (props) => {
             <AutocompleteInput
                 label="Business Name"
                 isRequired={false}
-                value={props.value}
+                value={enteredBusinessName}
                 onChange={onBusinessNameChange}
                 suggestions={currentlySelected === 'business' && suggestions}
                 onFocus={onFocusHandler}
                 onLostFocus={lostFocusHandler}
                 suggestionType='client'
                 id="business"
-            type="text"
+                type="text"
         />
         <AutocompleteInput
             label="Email"
             isValid={emailIsValid}
             isRequired={true}
-            value={props.value}
+            value={enteredEmail}
             onChange={onEmailChange}
             suggestions={currentlySelected === 'email' && suggestions}
             onFocus={onFocusHandler}

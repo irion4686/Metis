@@ -1,6 +1,6 @@
 import {Fragment, useEffect, useState, useContext, useCallback} from "react"
 import AutocompleteInput from "../../ui/input/autocomplete_input";
-import { getSuggestions } from '../../../model/address_model';
+import {getSuggestions, getPlaceInformation} from '../../../model/address_model';
 import ServerContext from "../../../store/server-context";
 import {v4 as uuidv4} from 'uuid';
 
@@ -21,6 +21,7 @@ const AddressForm = (props) => {
     const [firstRender, setFirstRender] = useState(false);
     const [currentUUID, setUUID] = useState(uuidv4());
     const [currentlySelected, setCurrentlySelected] = useState(selected.NONE);
+    const [suggestions, setSuggestions] = useState([]);
     const servCtx = useContext(ServerContext);
 
     const dummySuggestions = [
@@ -61,23 +62,6 @@ const AddressForm = (props) => {
         }
     ]
 
-    let suggestions = [
-        {
-            street: "",
-            city: "",
-            state: "",
-            zip: 0,
-            id: ''
-        }]
-
-    let address = {
-        street: '',
-        city: '',
-        state: '',
-        zip: 0,
-        id: ''
-    }
-
     const onStreetChange = event => {
         setEnteredStreet(event.target.value);
         setCurrentlySelected(selected.STREET);
@@ -94,7 +78,7 @@ const AddressForm = (props) => {
     }
 
     const onZipChange = event => {
-        setEnteredZip(+event.target.value);
+        setEnteredZip(event.target.value);
         setCurrentlySelected(selected.ZIP);
     }
 
@@ -106,28 +90,31 @@ const AddressForm = (props) => {
         switch (component) {
             case 'street':
                 setCurrentlySelected(selected.STREET);
+                break;
             case 'city':
                 setCurrentlySelected(selected.CITY);
+                break;
             case 'state':
                 setCurrentlySelected(selected.STATE);
-            case 'zip': 
+                break;
+            case 'zip':
                 setCurrentlySelected(selected.ZIP);
+                break;
         }
-        
+
     }
 
 
-    const lookupSuggestions = useCallback(async (add) => {
-        //return await getSuggestions(address, servCtx, currentUUID);
-        //console.log(suggestions);
-    }, [suggestions]);
+    const lookupSuggestions = useCallback(async (address) => {
+        return await getSuggestions(address, servCtx, currentUUID);
+    }, []);
 
     useEffect(async () => {
         if (!firstRender) {
             setFirstRender(!firstRender);
             return;
         }
-        address = {
+        const address = {
             street: enteredStreet,
             city: enteredCity,
             state: enteredState,
@@ -135,9 +122,28 @@ const AddressForm = (props) => {
             id: enteredId,
             uuid: currentUUID
         }
-        //suggestions = await lookupSuggestions();
+        setSuggestions(await lookupSuggestions(address));
     }, [lookupSuggestions, firstRender, enteredStreet, enteredCity, enteredState, enteredZip, enteredId]);
 
+    const onSelectionHandler = (address) => {
+        setUUID(uuidv4());
+        setEnteredStreet(address.street);
+        setEnteredCity(address.city);
+        setEnteredState(address.state);
+        setEnteredId(address.id);
+        getPlaceInformation(address.id, servCtx, currentUUID).then(place => {
+            setEnteredZip(place.zip);
+            const output = {
+                street: address.street,
+                city: address.city,
+                state: address.state,
+                zip: address.zip,
+                id: address.id
+            };
+            props.address(address);
+        })
+
+    }
 
 
     return (
@@ -146,43 +152,50 @@ const AddressForm = (props) => {
             <AutocompleteInput
                 label="Street"
                 isRequired={false}
-                value={props.value}
+                value={enteredStreet}
                 onChange={onStreetChange}
-                suggestions={currentlySelected === 'street' && dummySuggestions}
+                suggestions={currentlySelected === 'street' && suggestions}
                 suggestionType='address'
                 onLostFocus={lostFocusHandler}
                 onFocus={focusHandler}
+                onSelection={onSelectionHandler}
                 id="street"
                 type="text"
             />
             <AutocompleteInput
                 label="City"
                 isRequired={false}
-                value={props.value}
+                value={enteredCity}
                 onChange={onCityChange}
-                suggestions={currentlySelected === 'city' && dummySuggestions}
+                suggestions={currentlySelected === 'city' && suggestions}
+                suggestionType='address'
+                onSelection={onSelectionHandler}
                 id="city"
                 onLostFocus={lostFocusHandler}
                 onFocus={focusHandler}
-            type="text"
-        />
-        <AutocompleteInput
-            label="State"
-            isRequired={false}
-            value={props.value}
-            onChange={onStateChange}
-            suggestions={currentlySelected === 'state' && dummySuggestions}
-            id="state"
-            onLostFocus={lostFocusHandler}
-            onFocus={focusHandler}
-            type="text"
-        />
+                type="text"
+            />
+            <AutocompleteInput
+                label="State"
+                isRequired={false}
+                value={enteredState}
+                onChange={onStateChange}
+                suggestions={currentlySelected === 'state' && suggestions}
+                suggestionType='address'
+                onSelection={onSelectionHandler}
+                id="state"
+                onLostFocus={lostFocusHandler}
+                onFocus={focusHandler}
+                type="text"
+            />
             <AutocompleteInput
                 label="Zipcode"
                 isRequired={false}
-                value={props.value}
+                value={enteredZip}
                 onChange={onZipChange}
-                suggestions={currentlySelected === 'zip' && dummySuggestions}
+                suggestions={currentlySelected === 'zip' && suggestions}
+                suggestionType='address'
+                onSelection={onSelectionHandler}
                 id="zip"
                 onLostFocus={lostFocusHandler}
                 onFocus={focusHandler}

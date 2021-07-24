@@ -2,8 +2,9 @@
     background-color: transparent;
 }
 
-button {
-    background-color: rgb(36, 35, 35);
+.buttons {
+    border-radius: 8px;
+    text-align: left;
 }
 
 label {
