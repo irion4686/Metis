@@ -17,7 +17,6 @@ const QuoteDetailsForm = (props) => {
     const [fourthDateValue, setFourthDate] = useState('');
     const [roundTrip, setRoundTrip] = useState(false);
     const [displayRoundTrip, setDisplayRoundTrip] = useState(false);
-    const [timeframeValid, setTimeframeValid] = useState(false);
     const [totalHorses, setTotalHorses] = useState(0);
     const [singleStalls, setSingleStalls] = useState(0);
     const [doubleStalls, setDoubleStalls] = useState(0);

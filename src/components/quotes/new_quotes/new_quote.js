@@ -16,7 +16,7 @@ const NewQuote = () => {
   const [originAddress, setOrigin] = useState({});
   const [destinationAddress, setDestination] = useState({});
   const [distance, setDistance] = useState('');
-  const [mapURL, setMapURL] = useState('');
+  const [mapURL, setMapURL] = useState('https://www.google.com/maps/embed/v1/view?center=35.5,-98.35&zoom=3&key=AIzaSyDStzaI2_E0rwxaq0EcKO9251VVDLnYuac');
   const servCtx = useContext(ServerContext);
 
   let client = {
