@@ -45,7 +45,6 @@ const QuoteDetailsForm = (props) => {
         return totalHorses > 0;
     }
     const validateStalls = () => {
-        console.log('Stalls Valid: ', singleStalls >= 0 && doubleStalls >= 0 && boxStalls >= 0 && singleStalls + doubleStalls + boxStalls > 0);
         return singleStalls >= 0 && doubleStalls >= 0 && boxStalls >= 0 && singleStalls + doubleStalls + boxStalls > 0;
     }
 
@@ -101,9 +100,29 @@ const QuoteDetailsForm = (props) => {
             }
         }
     }
+    const updateTotals = () => {
+    }
     useEffect(() => {
         setDateDisplays();
         props.isValid(validateDates() && validateStalls() && validateTotalHorses() && validateTimeframe());
+        updateTotals();
+        const details = {
+            timing: {
+                timeframe: timeframe,
+                roundTrip: roundTrip,
+                firstDate: firstDateValue,
+                secondDate: secondDateValue,
+                thirdDate: thirdDateValue,
+                fourthDate: fourthDateValue,
+            },
+            horses: {
+                totalHorses: totalHorses === undefined ? 0 : totalHorses,
+                singleStalls: singleStalls === undefined ? 0 : singleStalls,
+                doubleStalls: doubleStalls === undefined ? 0 : doubleStalls,
+                boxStalls: boxStalls === undefined ? 0 : boxStalls
+            },
+        }
+        props.onChange(details);
     }, [timeframe, roundTrip, totalHorses, singleStalls, doubleStalls, boxStalls, firstDateValue, secondDateValue, thirdDateValue, fourthDateValue]);
 
     useEffect(() => {

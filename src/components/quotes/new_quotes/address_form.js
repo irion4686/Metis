@@ -103,12 +103,15 @@ const AddressForm = (props) => {
         }
 
     }
-
-
     const lookupSuggestions = useCallback(async (address) => {
         return await getSuggestions(address, servCtx, currentUUID);
     }, []);
 
+    const validateAddressLocally = () => {
+        if (enteredZip && enteredZip.trim().length >= 5) return true;
+        else if (enteredCity && enteredState && enteredCity.trim().length > 1 && enteredState.trim().length >= 2) return true;
+        return false;
+    }
     useEffect(async () => {
         if (!firstRender) {
             setFirstRender(!firstRender);
@@ -123,6 +126,7 @@ const AddressForm = (props) => {
             uuid: currentUUID
         }
         setSuggestions(await lookupSuggestions(address));
+        props.isValid(validateAddressLocally());
     }, [lookupSuggestions, firstRender, enteredStreet, enteredCity, enteredState, enteredZip, enteredId]);
 
     const onSelectionHandler = (address) => {
@@ -140,7 +144,7 @@ const AddressForm = (props) => {
                 zip: address.zip,
                 id: address.id
             };
-            props.address(address);
+            props.onChange(address);
         })
 
     }

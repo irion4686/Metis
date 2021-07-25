@@ -62,11 +62,28 @@ const ClientForm = (props) => {
         }
     }
 
+    const validateFirstName = () => {
+        setFirstNameValid(enteredFirstName.trim().length !== 0);
+    }
+
+    const validateEmail = () => {
+        setEmailValid(emailValidator.validate(enteredEmail));
+    }
+
+    const validatePhone = () => {
+        const countryCode = '+1'
+        try {
+            const value = phoneUtil.parse(countryCode + enteredPhone);
+            setPhoneValid(phoneUtil.isPossibleNumber(value));
+        } catch (error) {
+            setPhoneValid(false);
+        }
+    }
+
     const onFirstNameChange = event => {
         setCurrentlySelected(selected.FIRST);
         const input = event.target.value;
         setFirstName(input);
-        setFirstNameValid(input.trim().length !== 0)
     }
 
     const onLastNameChange = event => {
@@ -83,20 +100,12 @@ const ClientForm = (props) => {
         const input = event.target.value;
         setCurrentlySelected(selected.EMAIL);
         setEmail(input);
-        setEmailValid(emailValidator.validate(input));
     }
 
     const onPhoneChange = event => {
         const input = event.target.value;
         setCurrentlySelected(selected.PHONE);
         setPhone(input);
-        const countryCode = '+1'
-        try {
-            const value = phoneUtil.parse(countryCode + input);
-            setPhoneValid(phoneUtil.isPossibleNumber(value));
-        } catch (error) {
-            setPhoneValid(false);
-        }
     }
 
     const lookupSuggestions = useCallback(async (client) => {
@@ -110,9 +119,12 @@ const ClientForm = (props) => {
             businessName: enteredBusinessName,
             email: enteredEmail,
             phone: enteredPhone,
-            id: '',
+            id: currentCustId,
         };
         props.onClientChange(client);
+        validateFirstName();
+        validateEmail();
+        validatePhone();
         props.isValid(firstNameValid && emailIsValid && phoneIsValid);
         setSuggestions(await lookupSuggestions(client));
         formatPhone();

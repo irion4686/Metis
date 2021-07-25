@@ -6,6 +6,7 @@ import QuotePrice from "./quote_price_form";
 import {useEffect, useState, useContext} from "react";
 import {getDistance} from "../../../model/address_model";
 import ServerContext from "../../../store/server-context";
+import {submitQuote} from "../../../model/quote_model";
 
 const NewQuote = () => {
   const [clientIsValid, setClientValid] = useState(false);
@@ -16,17 +17,13 @@ const NewQuote = () => {
   const [originAddress, setOrigin] = useState({});
   const [destinationAddress, setDestination] = useState({});
   const [distance, setDistance] = useState('');
+  const [totals, setTotals] = useState({});
   const [mapURL, setMapURL] = useState('https://www.google.com/maps/embed/v1/view?center=35.5,-98.35&zoom=3&key=AIzaSyDStzaI2_E0rwxaq0EcKO9251VVDLnYuac');
-  const servCtx = useContext(ServerContext);
+  const [client, setClient] = useState({});
+  const [quoteDetails, setQuoteDetails] = useState({});
+  const [quotePricing, setQuotePricing] = useState({});
 
-  let client = {
-    firstName: "",
-    lastName: "",
-    businessName: "",
-    email: "",
-    phone: "",
-    id: "",
-  };
+  const servCtx = useContext(ServerContext);
 
   const validClientHandler = event => {
     setClientValid(event);
@@ -39,22 +36,42 @@ const NewQuote = () => {
   }
   const validDetailsHandler = event => {
     console.log('Details Valid: ', event);
-      setDetailsValid(event);
+    setDetailsValid(event);
   }
   const validPricingHandler = event => {
     setPricingValid(event);
   }
 
-  const onClientChange = (event) => {
-    client = event;
+  const onClientChange = (inClient) => {
+    setClient(inClient);
   };
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
     if (clientIsValid === true && originIsValid === true && destValid === true && detailsValid === true && pricingValid === true) {
-      console.log("submit");
+      const quote = {
+        client: client.id && client.id > 0 ? {id: client.id} : client,
+        locations: {
+          origin: originAddress,
+          destination: destinationAddress,
+          distance: distance
+        },
+        details: quoteDetails,
+        pricing: quotePricing
+      }
+      const result = await submitQuote(quote, servCtx);
+      if (result.code === 200) {
+        console.log('SUCCESS!');
+      } else {
+        console.log('Error: ', result.message);
+      }
     } else {
       console.log('Cant submit');
+      if (!clientIsValid) console.log('Client');
+      if (!originIsValid) console.log('Origin');
+      if (!destValid) console.log('Destination');
+      if (!detailsValid) console.log('Details');
+      if (!pricingValid) console.log('Pricing');
     }
   }
   const convertAddressToQuery = (address) => {
@@ -68,6 +85,20 @@ const NewQuote = () => {
       const destinationQuery = convertAddressToQuery(destinationAddress);
       setMapURL(`https://www.google.com/maps/embed/v1/directions?origin=${originQuery}&destination=${destinationQuery}&key=AIzaSyDStzaI2_E0rwxaq0EcKO9251VVDLnYuac`);
     }
+  }
+
+  const clientChangeHandler = inClient => {
+    setClient(inClient);
+  }
+
+  const quoteDetailsOnChangeHandler = inDetails => {
+    const totals = inDetails.horses;
+    setTotals(totals);
+    setQuoteDetails(inDetails);
+  }
+
+  const quotePricingOnChangeHandler = inPricing => {
+    setQuotePricing(inPricing);
   }
 
   useEffect(async () => {
@@ -88,11 +119,12 @@ const NewQuote = () => {
       <div className={classes.new_quote}>
         <form autoComplete='off' onSubmit={submitHandler}>
           <ClientForm onClientChange={onClientChange} isValid={validClientHandler}/>
-          <AddressForm isValid={validOriginHandler} address={setOrigin} addressType="Origin"/>
-          <AddressForm isValid={validDestHandler} address={setDestination} addressType="Destination"/>
+          <AddressForm isValid={validOriginHandler} onChange={setOrigin} addressType="Origin"/>
+          <AddressForm isValid={validDestHandler} onChange={setDestination} addressType="Destination"/>
           <iframe loading='lazy' allowFullScreen src={mapURL}/>
-          <QuoteDetailsForm isValid={validDetailsHandler} distance={+distance}/>
-          <QuotePrice isValid={validPricingHandler}/>
+          <QuoteDetailsForm isValid={validDetailsHandler} onChange={quoteDetailsOnChangeHandler} distance={distance}/>
+          <QuotePrice totals={totals} distance={distance} onChange={quotePricingOnChangeHandler}
+                      isValid={validPricingHandler}/>
           <div className={classes.actionDiv}>
             <button type='submit' className={classes.action}><label>Clear</label></button>
           </div>
