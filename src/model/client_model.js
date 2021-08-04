@@ -11,7 +11,7 @@ const mapResultsToSuggestions = (predictions) => {
                 businessName: prediction.business_name,
                 email: prediction.email,
                 phone: prediction.phone,
-                id: prediction.id,
+                id: prediction.client_id,
             }
             suggestions.push(suggestion);
             return suggestions;

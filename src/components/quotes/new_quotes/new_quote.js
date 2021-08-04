@@ -22,6 +22,8 @@ const NewQuote = () => {
   const [client, setClient] = useState({});
   const [quoteDetails, setQuoteDetails] = useState({});
   const [quotePricing, setQuotePricing] = useState({});
+  const [comments, setComments] = useState('');
+  const [commentsLen, setCommentsLen] = useState(0);
 
   const servCtx = useContext(ServerContext);
 
@@ -48,6 +50,7 @@ const NewQuote = () => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
+
     if (clientIsValid === true && originIsValid === true && destValid === true && detailsValid === true && pricingValid === true) {
       const quote = {
         client: client.id && client.id > 0 ? {id: client.id} : client,
@@ -57,10 +60,11 @@ const NewQuote = () => {
           distance: distance
         },
         details: quoteDetails,
-        pricing: quotePricing
+        pricing: quotePricing,
+        comments: comments
       }
       const result = await submitQuote(quote, servCtx);
-      if (result.code === 200) {
+      if (result === 200) {
         console.log('SUCCESS!');
       } else {
         console.log('Error: ', result.message);
@@ -87,10 +91,6 @@ const NewQuote = () => {
     }
   }
 
-  const clientChangeHandler = inClient => {
-    setClient(inClient);
-  }
-
   const quoteDetailsOnChangeHandler = inDetails => {
     const totals = inDetails.horses;
     setTotals(totals);
@@ -99,6 +99,16 @@ const NewQuote = () => {
 
   const quotePricingOnChangeHandler = inPricing => {
     setQuotePricing(inPricing);
+  }
+
+  const commentsOnChangeHandler = event => {
+    const input = event.target.value;
+    setCommentsLen(input.length);
+    setComments(input)
+  }
+
+  const clearClickHandler = () => {
+    console.log('Clearing...');
   }
 
   useEffect(async () => {
@@ -125,11 +135,14 @@ const NewQuote = () => {
           <QuoteDetailsForm isValid={validDetailsHandler} onChange={quoteDetailsOnChangeHandler} distance={distance}/>
           <QuotePrice totals={totals} distance={distance} onChange={quotePricingOnChangeHandler}
                       isValid={validPricingHandler}/>
+          <label htmlFor='comments'>Comments: ({commentsLen}/255)</label>
+          <textarea onChange={commentsOnChangeHandler} className={classes.comments} name='comments' rows='9'
+                    maxLength='255'/>
           <div className={classes.actionDiv}>
-            <button type='submit' className={classes.action}><label>Clear</label></button>
+            <button onClick={clearClickHandler} className={classes.action}><label>Clear</label></button>
           </div>
           <div className={classes.actionDiv}>
-            <button className={classes.action}><label>Submit</label></button>
+            <button type='submit' className={classes.action}><label>Submit</label></button>
           </div>
         </form>
     </div>

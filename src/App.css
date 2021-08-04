@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+
+button {
+  background-color: transparent;
+  margin: 2px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  align-self: start;
+}
+
+label {
+  font: inherit;
+  color: whitesmoke;
+  text-align: left;
+  font-size: medium;
+}

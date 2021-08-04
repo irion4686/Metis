@@ -1,3 +1,4 @@
+
 export async function submitQuote(quote, serverCtx) {
     const SERVER = serverCtx.SERVER;
     try {
@@ -12,11 +13,34 @@ export async function submitQuote(quote, serverCtx) {
             body: JSON.stringify(quote)
         })
         if (response.ok) {
-            return response.json();
+            return 200;
         } else {
-            return response.json().message;
+            const message = await response.json();
+            return message;
         }
     } catch (error) {
         return {code: 500, message: error.message};
+    }
+}
+
+export async function getQuotes(ctx) {
+    const SERVER = ctx.SERVER;
+    try {
+        const url = SERVER + 'api/quotes';
+        const response = await fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        }
+    } catch (error) {
+        console.log("Error");
+        console.log(error);
     }
 }

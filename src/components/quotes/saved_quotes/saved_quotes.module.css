@@ -5,3 +5,12 @@
     color: whitesmoke;
     font-size: 1.5em;
 }
+
+.savedQuotes {
+    display: flex;
+    width: 100%;
+}
+
+.savedQuotes ul {
+    width: 100%;
+}

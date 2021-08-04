@@ -45,6 +45,7 @@ iframe {
     max-width: 30%;
     min-height: 4em;
 }
+
 .actionDiv {
     display: flex;
     flex-direction: row;
@@ -52,4 +53,12 @@ iframe {
     width: 100%;
     text-align: end;
     justify-content: center;
+}
+
+.comments {
+    background-color: transparent;
+    color: whitesmoke;
+    font-size: 1.2em;
+    border-radius: 12px;
+    padding: 5px;
 }

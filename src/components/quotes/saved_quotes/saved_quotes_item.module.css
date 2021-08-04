@@ -1,0 +1,36 @@
+.item {
+    display: flex;
+    flex-direction: column;
+    margin: 5px 0px 0px 0px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+.row label {
+    font-size: .8rem;
+}
+
+.location label {
+    width: 100%;
+    font-size: .9rem;
+    font-weight: bolder;
+}
+
+.distance {
+    text-align: end;
+    width: 20% !important;
+}
+
+.row label {
+    margin: 0px;
+    text-align: justify-all;
+}
+
+.toLabel {
+    text-align: center !important;
+}
