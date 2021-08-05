@@ -18,9 +18,13 @@ const SavedQuotes = (props) => {
         props.onAddQuote(true);
     }
     return (
-        <div className={classes.savedQuotes}>
-            <button onClick={addQuoteHandler} className={classes.add}>Add Quote</button>
-            <ul>{quotes}</ul>
+        <div>
+            <div className={classes.actions}>
+                <button onClick={addQuoteHandler}>Add Quote</button>
+            </div>
+            <div className={classes.savedQuotes}>
+                <ul>{quotes}</ul>
+            </div>
         </div>
     )
 }

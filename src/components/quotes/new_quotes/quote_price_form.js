@@ -11,7 +11,7 @@ const QuotePrice = (props) => {
 
     const calculateBasePrice = (inTotals, inDistance) => {
         const totals = inTotals;
-        const distance = inDistance
+        const distance = parseInt(inDistance.replace(/[^\d\.\-]/g, ""));
         if (!totals.totalHorses) return;
         let price = 1.0 * totals.singleStalls;
         price += 1.5 * totals.doubleStalls;

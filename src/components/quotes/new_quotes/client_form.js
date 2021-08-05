@@ -104,7 +104,7 @@ const ClientForm = (props) => {
         const fetchSuggestions = async () => {
             return await getSuggestions(client, servCtx);
         }
-        fetchSuggestions();
+        return fetchSuggestions();
     }, [servCtx]);
 
     useEffect(() => {

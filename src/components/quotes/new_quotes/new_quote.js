@@ -24,6 +24,7 @@ const NewQuote = () => {
   const [quotePricing, setQuotePricing] = useState({});
   const [comments, setComments] = useState('');
   const [commentsLen, setCommentsLen] = useState(0);
+    const [isEnabled, setIsEnabled] = useState(true);
 
   const servCtx = useContext(ServerContext);
 
@@ -50,7 +51,6 @@ const NewQuote = () => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
-
     if (clientIsValid === true && originIsValid === true && destValid === true && detailsValid === true && pricingValid === true) {
       const quote = {
         client: client.id && client.id > 0 ? {id: client.id} : client,
@@ -63,14 +63,18 @@ const NewQuote = () => {
         pricing: quotePricing,
         comments: comments
       }
+        setIsEnabled(false);
       const result = await submitQuote(quote, servCtx);
       if (result === 200) {
-        console.log('SUCCESS!');
+          console.log('SUCCESS!');
+          window.location.reload(false);
       } else {
-        console.log('Error: ', result.message);
+          setIsEnabled(true);
+          console.log('Error: ', result.message);
       }
     } else {
-      console.log('Cant submit');
+        setIsEnabled(true);
+        console.log('Cant submit');
       if (!clientIsValid) console.log('Client');
       if (!originIsValid) console.log('Origin');
       if (!destValid) console.log('Destination');
@@ -145,7 +149,8 @@ const NewQuote = () => {
             <button onClick={clearClickHandler} className={classes.action}><label>Clear</label></button>
           </div>
           <div className={classes.actionDiv}>
-              <button type='submit' onClick={submitHandler} className={classes.action}><label>Submit</label></button>
+              <button type='submit' disabled={!isEnabled} onClick={submitHandler} className={classes.action}>
+                  <label>Submit</label></button>
           </div>
         </form>
     </div>
