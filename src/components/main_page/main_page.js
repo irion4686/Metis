@@ -1,7 +1,6 @@
 import classes from './main_page.module.css'
 import MobileTabs from '../mobile_tabs/MobileTabs';
 import DisplayedPage from '../displayed_page/displayed_page';
-import NewQuote from '../quotes/new_quotes/new_quote';
 import {useState} from "react";
 import Quotes from "../quotes/new_quotes/quotes";
 
@@ -21,8 +20,9 @@ const MainPage = () => {
 
     const mobileTabClickHandler = tab => {
         switch (tab) {
-            case 'quotes':
-
+            default:
+                setSelectedPage(Pages.QUOTES);
+                break;
         }
     }
 

@@ -16,9 +16,9 @@ const MobileTabs = props => {
     return (
         <div className={classes.tabs}>
             <button onClick={onClickQuotesHandler}>Quotes</button>
-            <button>Trips</button>
-            <button>Vehicles</button>
-            <button>Drivers</button>
+            <button onClick={onClickTripsHandler}>Trips</button>
+            <button onClick={onClickVehiclesHandler}>Vehicles</button>
+            <button onClick={onClickDriversHandler}>Drivers</button>
         </div>
     );
 };

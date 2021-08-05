@@ -1,6 +1,6 @@
 import {useState, useEffect, useContext, useCallback} from "react"
 import AutocompleteInput from "../../ui/input/autocomplete_input";
-import ClientModel, {getSuggestions} from '../../../model/client_model';
+import {getSuggestions} from '../../../model/client_model';
 import ServerContext from "../../../store/server-context";
 
 const emailValidator = require("email-validator");
@@ -34,49 +34,41 @@ const ClientForm = (props) => {
         switch (id) {
             case 'first':
                 setCurrentlySelected(selected.FIRST);
+                break;
             case 'last':
                 setCurrentlySelected(selected.LAST);
+                break;
             case 'business':
                 setCurrentlySelected(selected.BUSINESS);
+                break;
             case 'email':
                 setCurrentlySelected(selected.EMAIL);
+                break;
             case 'phone':
                 setCurrentlySelected(selected.PHONE);
+                break;
+            default:
+                setCurrentlySelected(selected.NONE);
         }
     }
-    const formatPhone = () => {
+
+    const formatPhone = useCallback(() => {
+        if (enteredPhone.trim().length < 7) return;
         try {
             const countryCode = '+1'
             const parsed = phoneUtil.parse(countryCode + enteredPhone)
             const formatted = phoneUtil.format(parsed, GooglePhone.PhoneNumberFormat.NATIONAL);
             setPhone(formatted);
         } catch (error) {
-            console.log('error: ', error);
+            console.log('Error formatting phone #: ', error);
             setPhoneValid(false);
         }
-    }
+    }, [enteredPhone]);
+
     const lostFocusHandler = (id) => {
         setCurrentlySelected(selected.NONE);
         if (id === 'phone') {
             formatPhone();
-        }
-    }
-
-    const validateFirstName = () => {
-        setFirstNameValid(enteredFirstName.trim().length !== 0);
-    }
-
-    const validateEmail = () => {
-        setEmailValid(emailValidator.validate(enteredEmail));
-    }
-
-    const validatePhone = () => {
-        const countryCode = '+1'
-        try {
-            const value = phoneUtil.parse(countryCode + enteredPhone);
-            setPhoneValid(phoneUtil.isPossibleNumber(value));
-        } catch (error) {
-            setPhoneValid(false);
         }
     }
 
@@ -108,27 +100,53 @@ const ClientForm = (props) => {
         setPhone(input);
     }
 
-    const lookupSuggestions = useCallback(async (client) => {
-        return await getSuggestions(client, servCtx);
-    }, []);
+    const lookupSuggestions = useCallback((client) => {
+        const fetchSuggestions = async () => {
+            return await getSuggestions(client, servCtx);
+        }
+        fetchSuggestions();
+    }, [servCtx]);
 
-    useEffect(async () => {
-        const client = {
-            firstName: enteredFirstName,
-            lastName: enteredLastName,
-            businessName: enteredBusinessName,
-            email: enteredEmail,
-            phone: enteredPhone,
-            id: currentCustId,
-        };
-        props.onClientChange(client);
-        validateFirstName();
-        validateEmail();
-        validatePhone();
-        props.isValid(firstNameValid && emailIsValid && phoneIsValid);
-        setSuggestions(await lookupSuggestions(client));
-        formatPhone();
-    }, [lookupSuggestions, enteredFirstName, enteredLastName, enteredBusinessName, enteredEmail, enteredPhone, firstNameValid, emailIsValid, phoneIsValid]);
+    useEffect(() => {
+        const fetchSuggestions = async () => {
+            const client = {
+                firstName: enteredFirstName,
+                lastName: enteredLastName,
+                businessName: enteredBusinessName,
+                email: enteredEmail,
+                phone: enteredPhone,
+                id: currentCustId,
+            };
+            const validateEntries = () => {
+                const validateFirstName = () => {
+                    setFirstNameValid(enteredFirstName.trim().length !== 0);
+                }
+
+                const validateEmail = () => {
+                    setEmailValid(emailValidator.validate(enteredEmail));
+                }
+
+                const validatePhone = () => {
+                    const countryCode = '+1'
+                    try {
+                        const value = phoneUtil.parse(countryCode + enteredPhone);
+                        setPhoneValid(phoneUtil.isPossibleNumber(value));
+                    } catch (error) {
+                        setPhoneValid(false);
+                    }
+                }
+                validateFirstName();
+                validateEmail();
+                validatePhone();
+            }
+            validateEntries();
+            props.onClientChange(client);
+            props.isValid(firstNameValid && emailIsValid && phoneIsValid);
+            setSuggestions(await lookupSuggestions(client));
+            formatPhone();
+        }
+        fetchSuggestions();
+    }, [lookupSuggestions, enteredFirstName, enteredLastName, enteredBusinessName, enteredEmail, enteredPhone, firstNameValid, emailIsValid, phoneIsValid, currentCustId, formatPhone]);
 
     const onSelectionHandler = (client) => {
         setFirstName(client.firstName);

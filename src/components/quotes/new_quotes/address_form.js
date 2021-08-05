@@ -1,4 +1,4 @@
-import {Fragment, useEffect, useState, useContext, useCallback} from "react"
+import {useEffect, useState, useContext, useCallback} from "react"
 import AutocompleteInput from "../../ui/input/autocomplete_input";
 import {getSuggestions, getPlaceInformation} from '../../../model/address_model';
 import ServerContext from "../../../store/server-context";
@@ -23,8 +23,8 @@ const AddressForm = (props) => {
     const [currentlySelected, setCurrentlySelected] = useState(selected.NONE);
     const [suggestions, setSuggestions] = useState([]);
     const servCtx = useContext(ServerContext);
-
-    const dummySuggestions = [
+    const isValid = props.isValid;
+    /*const dummySuggestions = [
         {
             "street": "60 Roland Court",
             "city": "Burgaw",
@@ -60,7 +60,7 @@ const AddressForm = (props) => {
             "zip": 0,
             "id": "ChIJQwBatIYnqokRojDm723bvLQ"
         }
-    ]
+    ]*/
 
     const onStreetChange = event => {
         setEnteredStreet(event.target.value);
@@ -100,34 +100,41 @@ const AddressForm = (props) => {
             case 'zip':
                 setCurrentlySelected(selected.ZIP);
                 break;
+            default:
+                setCurrentlySelected(selected.NONE);
         }
 
     }
     const lookupSuggestions = useCallback(async (address) => {
         return await getSuggestions(address, servCtx, currentUUID);
-    }, []);
+    }, [servCtx, currentUUID]);
 
-    const validateAddressLocally = () => {
-        if (enteredZip && enteredZip.trim().length >= 5) return true;
-        else if (enteredCity && enteredState && enteredCity.trim().length > 1 && enteredState.trim().length >= 2) return true;
-        return false;
-    }
-    useEffect(async () => {
-        if (!firstRender) {
-            setFirstRender(!firstRender);
-            return;
+    const validateAddressLocally = useCallback(() => {
+        if (enteredZip && enteredZip.trim().length >= 5) return isValid(true);
+        else if (enteredCity && enteredState && enteredCity.trim().length > 1 && enteredState.trim().length >= 2) return isValid(true);
+        return isValid(false);
+    }, [enteredState, enteredZip, enteredCity, isValid])
+
+    useEffect(() => {
+        const getSuggestions = async () => {
+            if (!firstRender) {
+                setFirstRender(!firstRender);
+                return;
+            }
+            const address = {
+                street: enteredStreet,
+                city: enteredCity,
+                state: enteredState,
+                zip: enteredZip,
+                id: enteredId,
+                uuid: currentUUID
+            }
+
+            setSuggestions(await lookupSuggestions(address));
+            validateAddressLocally();
         }
-        const address = {
-            street: enteredStreet,
-            city: enteredCity,
-            state: enteredState,
-            zip: enteredZip,
-            id: enteredId,
-            uuid: currentUUID
-        }
-        setSuggestions(await lookupSuggestions(address));
-        props.isValid(validateAddressLocally());
-    }, [lookupSuggestions, firstRender, enteredStreet, enteredCity, enteredState, enteredZip, enteredId]);
+        getSuggestions();
+    }, [lookupSuggestions, firstRender, enteredStreet, enteredCity, enteredState, enteredZip, enteredId, currentUUID, validateAddressLocally]);
 
     const onSelectionHandler = (address) => {
         setUUID(uuidv4());
@@ -137,13 +144,6 @@ const AddressForm = (props) => {
         setEnteredId(address.id);
         getPlaceInformation(address.id, servCtx, currentUUID).then(place => {
             setEnteredZip(place.zip);
-            const output = {
-                street: address.street,
-                city: address.city,
-                state: address.state,
-                zip: address.zip,
-                id: address.id
-            };
             props.onChange(address);
         })
 

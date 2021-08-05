@@ -9,10 +9,10 @@ const SavedQuotes = (props) => {
     const servCtx = useContext(ServerContext);
 
     useEffect(async () => {
-        console.log('fetching');
         const localQuotes = await getQuotes(servCtx);
-        setQuotes(localQuotes.map(quote => saved_quote_item(quote)));
-        console.log(localQuotes);
+        if (localQuotes) {
+            setQuotes(localQuotes.map(quote => saved_quote_item(quote)));
+        }
     }, [])
     const addQuoteHandler = () => {
         props.onAddQuote(true);

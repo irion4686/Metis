@@ -3,7 +3,7 @@ import ClientForm from "./client_form";
 import AddressForm from "./address_form";
 import QuoteDetailsForm from "./quote_details_form";
 import QuotePrice from "./quote_price_form";
-import {useEffect, useState, useContext} from "react";
+import {useEffect, useState, useContext, useCallback} from "react";
 import {getDistance} from "../../../model/address_model";
 import ServerContext from "../../../store/server-context";
 import {submitQuote} from "../../../model/quote_model";
@@ -33,16 +33,16 @@ const NewQuote = () => {
   const validOriginHandler = event => {
     setOriginValid(event);
   }
-  const validDestHandler = event => {
-    setDestValid(event);
-  }
-  const validDetailsHandler = event => {
-    console.log('Details Valid: ', event);
-    setDetailsValid(event);
-  }
-  const validPricingHandler = event => {
-    setPricingValid(event);
-  }
+    const validDestHandler = event => {
+        setDestValid(event);
+    }
+    const validDetailsHandler = useCallback(event => {
+        console.log('Details Valid: ', event);
+        setDetailsValid(event);
+    }, []);
+    const validPricingHandler = event => {
+        setPricingValid(event);
+    }
 
   const onClientChange = (inClient) => {
     setClient(inClient);
@@ -83,14 +83,6 @@ const NewQuote = () => {
     return result.split(' ').join('%20');
   }
 
-  const refreshMap = (validOrigin, validDestination) => {
-    if (validOrigin && validDestination) {
-      const originQuery = convertAddressToQuery(originAddress);
-      const destinationQuery = convertAddressToQuery(destinationAddress);
-      setMapURL(`https://www.google.com/maps/embed/v1/directions?origin=${originQuery}&destination=${destinationQuery}&key=AIzaSyDStzaI2_E0rwxaq0EcKO9251VVDLnYuac`);
-    }
-  }
-
   const quoteDetailsOnChangeHandler = inDetails => {
     const totals = inDetails.horses;
     setTotals(totals);
@@ -101,48 +93,59 @@ const NewQuote = () => {
     setQuotePricing(inPricing);
   }
 
-  const commentsOnChangeHandler = event => {
-    const input = event.target.value;
-    setCommentsLen(input.length);
-    setComments(input)
-  }
-
-  const clearClickHandler = () => {
-    console.log('Clearing...');
-  }
-
-  useEffect(async () => {
-    const validOrigin = originAddress.id || originAddress.zip || originAddress.city && originAddress.state ? true : false;
-    const validDestination = destinationAddress.id || destinationAddress.zip || destinationAddress.city && destinationAddress.state ? true : false;
-    if (validOrigin && validDestination) {
-      try {
-        const result = await getDistance(originAddress, destinationAddress, servCtx);
-        setDistance(result);
-        refreshMap(validOrigin, validDestination);
-      } catch (err) {
-        console.log('Unable to find distance!');
-      }
+    const commentsOnChangeHandler = event => {
+        const input = event.target.value;
+        setCommentsLen(input.length);
+        setComments(input)
     }
-  }, [originAddress, destinationAddress]);
 
-  return (
-      <div className={classes.new_quote}>
-        <form autoComplete='off' onSubmit={submitHandler}>
-          <ClientForm onClientChange={onClientChange} isValid={validClientHandler}/>
-          <AddressForm isValid={validOriginHandler} onChange={setOrigin} addressType="Origin"/>
-          <AddressForm isValid={validDestHandler} onChange={setDestination} addressType="Destination"/>
-          <iframe loading='lazy' allowFullScreen src={mapURL}/>
-          <QuoteDetailsForm isValid={validDetailsHandler} onChange={quoteDetailsOnChangeHandler} distance={distance}/>
-          <QuotePrice totals={totals} distance={distance} onChange={quotePricingOnChangeHandler}
-                      isValid={validPricingHandler}/>
-          <label htmlFor='comments'>Comments: ({commentsLen}/255)</label>
-          <textarea onChange={commentsOnChangeHandler} className={classes.comments} name='comments' rows='9'
-                    maxLength='255'/>
+    const clearClickHandler = () => {
+        console.log('Clearing...');
+    }
+
+    useEffect(() => {
+        const fetchDistance = async () => {
+            const validOrigin = originAddress.id || originAddress.zip || (originAddress.city && originAddress.state) ? true : false;
+            const validDestination = destinationAddress.id || destinationAddress.zip || (destinationAddress.city && destinationAddress.state) ? true : false;
+            if (validOrigin && validDestination) {
+                try {
+                    const result = await getDistance(originAddress, destinationAddress, servCtx);
+                    setDistance(result);
+                    const refreshMap = (validOrigin, validDestination) => {
+                        if (validOrigin && validDestination) {
+                            const originQuery = convertAddressToQuery(originAddress);
+                            const destinationQuery = convertAddressToQuery(destinationAddress);
+                            setMapURL(`https://www.google.com/maps/embed/v1/directions?origin=${originQuery}&destination=${destinationQuery}&key=AIzaSyDStzaI2_E0rwxaq0EcKO9251VVDLnYuac`);
+                        }
+                    }
+                    refreshMap(validOrigin, validDestination);
+                } catch (err) {
+                    console.log('Unable to find distance!');
+                }
+            }
+        }
+        fetchDistance();
+    }, [originAddress, destinationAddress, servCtx]);
+
+    return (
+        <div className={classes.new_quote}>
+            <form autoComplete='off'>
+                <ClientForm onClientChange={onClientChange} isValid={validClientHandler}/>
+                <AddressForm isValid={validOriginHandler} onChange={setOrigin} addressType="Origin"/>
+                <AddressForm isValid={validDestHandler} onChange={setDestination} addressType="Destination"/>
+                <iframe title='Route Map' loading='lazy' allowFullScreen src={mapURL}/>
+                <QuoteDetailsForm isValid={validDetailsHandler} onChange={quoteDetailsOnChangeHandler}
+                                  distance={distance}/>
+                <QuotePrice totals={totals} distance={distance} onChange={quotePricingOnChangeHandler}
+                            isValid={validPricingHandler}/>
+                <label htmlFor='comments'>Comments: ({commentsLen}/255)</label>
+                <textarea onChange={commentsOnChangeHandler} className={classes.comments} name='comments' rows='9'
+                          maxLength='255'/>
           <div className={classes.actionDiv}>
             <button onClick={clearClickHandler} className={classes.action}><label>Clear</label></button>
           </div>
           <div className={classes.actionDiv}>
-            <button type='submit' className={classes.action}><label>Submit</label></button>
+              <button type='submit' onClick={submitHandler} className={classes.action}><label>Submit</label></button>
           </div>
         </form>
     </div>

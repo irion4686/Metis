@@ -5,7 +5,6 @@ import MainPage from './components/main_page/main_page';
 import Signup from './components/signup/signup';
 import Wrapper from './components/helpers/Wrapper';
 
-
 function App() {
   //const [loggedIn, setLoggedIn] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);

@@ -1,8 +1,6 @@
 import classes from './quote_price_form.module.css';
 
-import {useContext, useEffect, useState} from "react";
-
-const submitQuote = require('../../../model/quote_model');
+import {useEffect, useState} from "react";
 
 const QuotePrice = (props) => {
     const [basePrice, setBasePrice] = useState(0.0);
@@ -22,11 +20,11 @@ const QuotePrice = (props) => {
         setBasePrice(price);
     }
 
-    const calculateTotalPrice = () => {
-        const preDiscount = basePrice + layoverCharges + miscCharges
-        setTotalPrice(preDiscount - (preDiscount * (discount / 100)));
-    }
     useEffect(() => {
+        const calculateTotalPrice = () => {
+            const preDiscount = basePrice + layoverCharges + miscCharges
+            setTotalPrice(preDiscount - (preDiscount * (discount / 100)));
+        }
         calculateTotalPrice();
         if (totalPrice >= 0) props.isValid(true);
         else props.isValid(false);
@@ -38,7 +36,7 @@ const QuotePrice = (props) => {
             totalPrice: totalPrice
         }
         props.onChange(pricing);
-    }, [basePrice, discount, layoverCharges, miscCharges])
+    }, [basePrice, discount, layoverCharges, miscCharges, totalPrice])
 
     useEffect(() => {
         calculateBasePrice(props.totals, props.distance);

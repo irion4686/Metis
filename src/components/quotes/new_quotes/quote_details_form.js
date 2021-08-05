@@ -21,7 +21,7 @@ const QuoteDetailsForm = (props) => {
     const [singleStalls, setSingleStalls] = useState(0);
     const [doubleStalls, setDoubleStalls] = useState(0);
     const [boxStalls, setBoxStalls] = useState(0);
-
+    const isValid = props.isValid;
     const returnMinDate = () => {
         let today = new Date();
         let dd = today.getDate();
@@ -37,74 +37,73 @@ const QuoteDetailsForm = (props) => {
     }
     const MIN_DATE = returnMinDate();
 
-    const validateTimeframe = () => {
-        return timeframe !== '';
-    }
-
-    const validateTotalHorses = () => {
-        return totalHorses > 0;
-    }
-    const validateStalls = () => {
-        return singleStalls >= 0 && doubleStalls >= 0 && boxStalls >= 0 && singleStalls + doubleStalls + boxStalls > 0;
-    }
-
-    const validateDates = () => {
-        if (displayFirstDate && firstDateValue.trim() === '') return false;
-        if (displaySecondDate && secondDateValue === '') return false;
-        if (displayThirdDate && thirdDateValue === '') return false;
-        if (displayFourthDate && fourthDateValue === '') return false;
-        return true;
-    }
-
-    const setDateDisplays = () => {
-        if (timeframe === '' || timeframe === 'UNKNOWN' || timeframe === 'ASAP') {
-            setDisplayFirstDate(false);
-            setDisplaySecondDate(false);
-            setDisplayThirdDate(false);
-            setDisplayFourthDate(false);
-            setDisplayRoundTrip(false);
-        } else {
-            if (timeframe === 'BEFORE') {
-                console.log('Before')
-                setFirstDateLabel('Deliver by:');
-                setSecondDateLabel('Return by:');
-                setDisplayFirstDate(true);
-                setDisplaySecondDate(roundTrip);
-                setDisplayRoundTrip(true);
-            } else if (timeframe === 'AFTER') {
-                setFirstDateLabel('Delivery after:');
-                setSecondDateLabel('Return after:');
-                setDisplayFirstDate(true);
-                setDisplaySecondDate(roundTrip);
-                setDisplayRoundTrip(true);
-            } else if (timeframe === 'BETWEEN') {
-                setFirstDateLabel('Deliver between:');
-                setSecondDateLabel('and:');
-                setThirdDateLabel('Return between:');
-                setFourthDateLabel('and:');
-                setDisplayFirstDate(true);
-                setDisplaySecondDate(true);
-                setDisplayThirdDate(roundTrip);
-                setDisplayFourthDate(roundTrip);
-                setDisplayRoundTrip(true);
-            } else if (timeframe === 'SPECIFIC') {
-                setFirstDateLabel('Deliver on:');
-                setSecondDateLabel('Return on:');
-                setDisplayFirstDate(true);
-                setDisplaySecondDate(roundTrip);
-                setDisplayThirdDate(false);
-                setDisplayFourthDate(false);
-                setDisplayRoundTrip(true);
-            } else {
-                console.log('Unexpected value for timeframe');
-            }
-        }
-    }
     const updateTotals = () => {
     }
     useEffect(() => {
+        const validateTimeframe = () => {
+            return timeframe !== '';
+        }
+
+        const validateTotalHorses = () => {
+            return totalHorses > 0;
+        }
+        const validateStalls = () => {
+            return singleStalls >= 0 && doubleStalls >= 0 && boxStalls >= 0 && singleStalls + doubleStalls + boxStalls > 0;
+        }
+
+        const validateDates = () => {
+            if (displayFirstDate && firstDateValue.trim() === '') return false;
+            if (displaySecondDate && secondDateValue === '') return false;
+            if (displayThirdDate && thirdDateValue === '') return false;
+            if (displayFourthDate && fourthDateValue === '') return false;
+            return true;
+        }
+        const setDateDisplays = () => {
+            if (timeframe === '' || timeframe === 'UNKNOWN' || timeframe === 'ASAP') {
+                setDisplayFirstDate(false);
+                setDisplaySecondDate(false);
+                setDisplayThirdDate(false);
+                setDisplayFourthDate(false);
+                setDisplayRoundTrip(false);
+            } else {
+                if (timeframe === 'BEFORE') {
+                    console.log('Before')
+                    setFirstDateLabel('Deliver by:');
+                    setSecondDateLabel('Return by:');
+                    setDisplayFirstDate(true);
+                    setDisplaySecondDate(roundTrip);
+                    setDisplayRoundTrip(true);
+                } else if (timeframe === 'AFTER') {
+                    setFirstDateLabel('Delivery after:');
+                    setSecondDateLabel('Return after:');
+                    setDisplayFirstDate(true);
+                    setDisplaySecondDate(roundTrip);
+                    setDisplayRoundTrip(true);
+                } else if (timeframe === 'BETWEEN') {
+                    setFirstDateLabel('Deliver between:');
+                    setSecondDateLabel('and:');
+                    setThirdDateLabel('Return between:');
+                    setFourthDateLabel('and:');
+                    setDisplayFirstDate(true);
+                    setDisplaySecondDate(true);
+                    setDisplayThirdDate(roundTrip);
+                    setDisplayFourthDate(roundTrip);
+                    setDisplayRoundTrip(true);
+                } else if (timeframe === 'SPECIFIC') {
+                    setFirstDateLabel('Deliver on:');
+                    setSecondDateLabel('Return on:');
+                    setDisplayFirstDate(true);
+                    setDisplaySecondDate(roundTrip);
+                    setDisplayThirdDate(false);
+                    setDisplayFourthDate(false);
+                    setDisplayRoundTrip(true);
+                } else {
+                    console.log('Unexpected value for timeframe');
+                }
+            }
+        }
         setDateDisplays();
-        props.isValid(validateDates() && validateStalls() && validateTotalHorses() && validateTimeframe());
+        isValid(validateDates() && validateStalls() && validateTotalHorses() && validateTimeframe());
         updateTotals();
         const details = {
             timing: {
@@ -123,7 +122,7 @@ const QuoteDetailsForm = (props) => {
             },
         }
         props.onChange(details);
-    }, [timeframe, roundTrip, totalHorses, singleStalls, doubleStalls, boxStalls, firstDateValue, secondDateValue, thirdDateValue, fourthDateValue]);
+    }, [timeframe, roundTrip, displayFirstDate, displayFourthDate, displaySecondDate, displayThirdDate, totalHorses, singleStalls, doubleStalls, boxStalls, firstDateValue, secondDateValue, thirdDateValue, fourthDateValue]);
 
     useEffect(() => {
         if (!displayRoundTrip) {
@@ -177,6 +176,9 @@ const QuoteDetailsForm = (props) => {
                 break;
             case 'Specific Date(s)':
                 setTimeframe('SPECIFIC');
+                break;
+            default:
+                setTimeframe('');
         }
     }
 
@@ -200,11 +202,6 @@ const QuoteDetailsForm = (props) => {
         setFourthDate(event.target.value);
     }
 
-    const onSubmitHandler = event => {
-        event.preventDefault();
-        validateDates();
-    }
-
     const onTotalHorsesChangeHandler = event => {
         if (event.target.value < 0) return;
         setTotalHorses(event.target.value);
@@ -226,7 +223,7 @@ const QuoteDetailsForm = (props) => {
     }
 
     return (
-        <div onSubmit={onSubmitHandler} className={classes.details}>
+        <div className={classes.details}>
             <label className={classes.distance}>Distance: {props.distance} mi</label>
             <div>
                 <label>Timeframe:</label>

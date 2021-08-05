@@ -38,6 +38,10 @@ export async function getQuotes(ctx) {
         if (response.ok) {
             const data = await response.json();
             return data;
+        } else {
+            if (response.status === 401) {
+
+            }
         }
     } catch (error) {
         console.log("Error");

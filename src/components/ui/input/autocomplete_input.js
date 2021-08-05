@@ -35,7 +35,6 @@ const AutocompleteInput = (props) => {
 
     const onChangeHandler = (event) => {
         props.onChange(event);
-        console.log('Valid: ' + props.isValid);
     }
     return (
         <div className={classes.input}>

@@ -2,6 +2,9 @@
     display: flex;
     flex-direction: column;
     margin: 5px 0px 0px 0px;
+    background-color: #2f2f2f;
+    padding: 5px;
+    border-radius: 8px;
 }
 
 .row {
@@ -11,7 +14,7 @@
     justify-content: space-between;
 }
 
-.row label {
+.item label {
     font-size: .8rem;
 }
 
@@ -26,7 +29,7 @@
     width: 20% !important;
 }
 
-.row label {
+.item label {
     margin: 0px;
     text-align: justify-all;
 }
