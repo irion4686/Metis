@@ -2,12 +2,12 @@ import classes from './quote_price_form.module.css';
 
 import {useEffect, useState} from "react";
 
-const QuotePrice = (props) => {
+const QuotePrice = ({totals, distance, onChange, isValid}) => {
     const [basePrice, setBasePrice] = useState(0.0);
     const [discount, setDiscount] = useState(0);
     const [layoverCharges, setOvernightCosts] = useState(0.0);
     const [miscCharges, setMiscCosts] = useState(0.0);
-    const [totalPrice, setTotalPrice] = useState(0.0)
+    const [totalPrice, setTotalPrice] = useState(0.0);
 
     const calculateBasePrice = (inTotals, inDistance) => {
         const totals = inTotals;
@@ -26,8 +26,8 @@ const QuotePrice = (props) => {
             setTotalPrice(preDiscount - (preDiscount * (discount / 100)));
         }
         calculateTotalPrice();
-        if (totalPrice > 0) props.isValid(true);
-        else props.isValid(false);
+        if (totalPrice > 0) isValid(true);
+        else isValid(false);
         const pricing = {
             basePrice: basePrice,
             discount: discount,
@@ -35,12 +35,12 @@ const QuotePrice = (props) => {
             miscCharges: miscCharges,
             totalPrice: totalPrice
         }
-        props.onChange(pricing);
-    }, [basePrice, discount, layoverCharges, miscCharges, totalPrice])
+        onChange(pricing);
+    }, [basePrice, discount, layoverCharges, miscCharges, totalPrice, isValid, onChange])
 
     useEffect(() => {
-        calculateBasePrice(props.totals, props.distance);
-    }, [props.totals, props.distance]);
+        calculateBasePrice(totals, distance);
+    }, [totals, distance]);
 
     const onBasePriceChangeHandler = event => {
         setBasePrice(+event.target.value);

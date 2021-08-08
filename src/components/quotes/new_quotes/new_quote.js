@@ -36,9 +36,9 @@ const NewQuote = () => {
 
     const servCtx = useContext(ServerContext);
 
-    const validClientHandler = event => {
+    const validClientHandler = useCallback(event => {
         setClientValid(event);
-    }
+    }, []);
     const validOriginHandler = event => {
         setOriginValid(event);
     }
@@ -49,13 +49,13 @@ const NewQuote = () => {
         console.log('Details Valid: ', event);
         setDetailsValid(event);
     }, []);
-    const validPricingHandler = event => {
+    const validPricingHandler = useCallback(event => {
         setPricingValid(event);
-    }
+    }, []);
 
-    const onClientChange = (inClient) => {
+    const onClientChange = useCallback((inClient) => {
         setClient(inClient);
-    };
+    }, []);
 
     const closeErrorHandler = () => {
         setErrorTitle('');
@@ -101,15 +101,15 @@ const NewQuote = () => {
         return result.split(' ').join('%20');
     }
 
-    const quoteDetailsOnChangeHandler = inDetails => {
+    const quoteDetailsOnChangeHandler = useCallback(inDetails => {
         const totals = inDetails.horses;
         setTotals(totals);
         setQuoteDetails(inDetails);
-    }
+    }, []);
 
-    const quotePricingOnChangeHandler = inPricing => {
+    const quotePricingOnChangeHandler = useCallback(inPricing => {
         setQuotePricing(inPricing);
-    }
+    }, []);
 
     const commentsOnChangeHandler = event => {
         const input = event.target.value;

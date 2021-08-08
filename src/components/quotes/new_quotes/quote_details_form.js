@@ -1,7 +1,7 @@
 import classes from './quote_details_form.module.css';
 import {useEffect, useState} from "react";
 
-const QuoteDetailsForm = (props) => {
+const QuoteDetailsForm = ({isValid, onChange, distance}) => {
     const [timeframe, setTimeframe] = useState('');
     const [firstDateLabel, setFirstDateLabel] = useState('');
     const [secondDateLabel, setSecondDateLabel] = useState('');
@@ -21,7 +21,6 @@ const QuoteDetailsForm = (props) => {
     const [singleStalls, setSingleStalls] = useState(0);
     const [doubleStalls, setDoubleStalls] = useState(0);
     const [boxStalls, setBoxStalls] = useState(0);
-    const isValid = props.isValid;
     const returnMinDate = () => {
         let today = new Date();
         let dd = today.getDate();
@@ -121,8 +120,8 @@ const QuoteDetailsForm = (props) => {
                 boxStalls: boxStalls === undefined ? 0 : boxStalls
             },
         }
-        props.onChange(details);
-    }, [timeframe, roundTrip, displayFirstDate, displayFourthDate, displaySecondDate, displayThirdDate, totalHorses, singleStalls, doubleStalls, boxStalls, firstDateValue, secondDateValue, thirdDateValue, fourthDateValue]);
+        onChange(details);
+    }, [timeframe, roundTrip, displayFirstDate, displayFourthDate, displaySecondDate, displayThirdDate, totalHorses, singleStalls, doubleStalls, boxStalls, firstDateValue, secondDateValue, thirdDateValue, fourthDateValue, isValid, onChange]);
 
     useEffect(() => {
         if (!displayRoundTrip) {
@@ -224,7 +223,7 @@ const QuoteDetailsForm = (props) => {
 
     return (
         <div className={classes.details}>
-            <label className={classes.distance}>Distance: {props.distance} mi</label>
+            <label className={classes.distance}>Distance: {distance} mi</label>
             <div>
                 <label>Timeframe:</label>
                 <select onChange={timeframeChangeHandler} className={classes.dropdown}>

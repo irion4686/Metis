@@ -7,7 +7,7 @@ const emailValidator = require("email-validator");
 const GooglePhone = require('google-libphonenumber');
 const phoneUtil = GooglePhone.PhoneNumberUtil.getInstance();
 
-const ClientForm = (props) => {
+const ClientForm = ({onClientChange, isValid}) => {
     const selected = {
         FIRST: 'first',
         LAST: 'last',
@@ -140,13 +140,14 @@ const ClientForm = (props) => {
                 validatePhone();
             }
             validateEntries();
-            props.onClientChange(client);
-            props.isValid(firstNameValid && emailIsValid && phoneIsValid);
+            onClientChange(client);
+            isValid(firstNameValid && emailIsValid && phoneIsValid);
             setSuggestions(await lookupSuggestions(client));
             formatPhone();
         }
         fetchSuggestions();
-    }, [lookupSuggestions, enteredFirstName, enteredLastName, enteredBusinessName, enteredEmail, enteredPhone, firstNameValid, emailIsValid, phoneIsValid, currentCustId, formatPhone]);
+        console.log('Test');
+    }, [lookupSuggestions, enteredFirstName, enteredLastName, enteredBusinessName, enteredEmail, enteredPhone, firstNameValid, emailIsValid, phoneIsValid, currentCustId, formatPhone, onClientChange, isValid]);
 
     const onSelectionHandler = (client) => {
         setFirstName(client.firstName);
