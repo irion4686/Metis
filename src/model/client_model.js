@@ -45,8 +45,7 @@ export async function getSuggestions(client, ctx) {
                 const suggestions = mapResultsToSuggestions(data.suggestions);
                 return suggestions;
             } else {
-                let message = 'Unknown error';
-                if (response.status === 409) message = 'User with that email already exists';
+                console.log('Unknown error');
             }
         } catch (error) {
             console.log("Error");

@@ -79,6 +79,9 @@ const fillInAddress = (results) => {
                     address.state = component.short_name;
                     break;
                 }
+                default: {
+                    // current field is not used
+                }
             }
 
         }
@@ -87,7 +90,7 @@ const fillInAddress = (results) => {
 }
 
 export async function getSuggestions(address, ctx) {
-    if (address.street || address.city || address.state || address.zip != 0) {
+    if (address.street || address.city || address.state || address.zip !== 0) {
         const SERVER = ctx.SERVER;
         try {
             if (isLoading) {

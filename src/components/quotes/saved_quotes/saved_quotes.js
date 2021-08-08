@@ -13,7 +13,7 @@ const SavedQuotes = (props) => {
         if (localQuotes) {
             setQuotes(localQuotes.map(quote => saved_quote_item(quote)));
         }
-    }, [])
+    }, [servCtx])
     const addQuoteHandler = () => {
         props.onAddQuote(true);
     }
