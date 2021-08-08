@@ -26,7 +26,7 @@ const QuotePrice = (props) => {
             setTotalPrice(preDiscount - (preDiscount * (discount / 100)));
         }
         calculateTotalPrice();
-        if (totalPrice >= 0) props.isValid(true);
+        if (totalPrice > 0) props.isValid(true);
         else props.isValid(false);
         const pricing = {
             basePrice: basePrice,

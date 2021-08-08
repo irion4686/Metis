@@ -1,0 +1,14 @@
+.problems {
+    margin: auto;
+    color: darkred;
+    display: flex;
+    width: 70%;
+    flex-direction: column;
+    list-style: inside;
+}
+
+.problems li {
+    width: fit-content;
+    list-style-type: circle;
+    font-size: .75em;
+}

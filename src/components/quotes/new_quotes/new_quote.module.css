@@ -46,6 +46,10 @@ iframe {
     min-height: 4em;
 }
 
+.actionDiv button:disabled {
+    background-color: rgba(65, 65, 65, .4);
+}
+
 .actionDiv {
     display: flex;
     flex-direction: row;
@@ -53,6 +57,10 @@ iframe {
     width: 100%;
     text-align: end;
     justify-content: center;
+}
+
+.actionDiv label {
+    font-weight: bold;
 }
 
 .comments {

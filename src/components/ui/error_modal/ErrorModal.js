@@ -27,11 +27,12 @@ const ModalOverlay = (props) => {
 const ErrorModal = (props) => {
   return (
     <React.Fragment>
-      {ReactDOM.createPortal(
-        <Backdrop onClick={props.onError} />,
-        document.getElementById("backdrop-root")
-      )};
-      {ReactDOM.createPortal(<ModalOverlay title={props.title} message={props.message} onClick={props.onError} />, document.getElementById("overlay-root"))};
+        {ReactDOM.createPortal(
+            <Backdrop onClick={props.onClick}/>,
+            document.getElementById("backdrop-root")
+        )};
+        {ReactDOM.createPortal(<ModalOverlay title={props.title} message={props.message}
+                                             onClick={props.onClick}/>, document.getElementById("overlay-root"))};
     </React.Fragment>
   );
 };
