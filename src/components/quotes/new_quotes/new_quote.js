@@ -9,6 +9,7 @@ import ServerContext from "../../../store/server-context";
 import {submitQuote} from "../../../model/quote_model";
 import ErrorModal from "../../ui/error_modal/ErrorModal";
 import InlineError from "./inline_error";
+import ConfirmModal from "../../ui/confirm_modal/confirm_modal";
 
 const NewQuote = () => {
     const [clientIsValid, setClientValid] = useState(false);
@@ -31,6 +32,7 @@ const NewQuote = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [displayError, setDisplayError] = useState(false);
     const [currentProblems, setCurrentProblems] = useState([]);
+    const [displayConfirmModal, setDisplayConfirmModal] = useState(false);
 
     const servCtx = useContext(ServerContext);
 
@@ -116,8 +118,15 @@ const NewQuote = () => {
     }
 
     const cancelClickHandler = (event) => {
-        event.preventDefault();
-        console.log('Cancelling');
+        setDisplayConfirmModal(true);
+    }
+
+    const onQuitHandler = () => {
+        window.location.reload(false);
+    }
+
+    const onContinueHandler = () => {
+        setDisplayConfirmModal(false);
     }
 
     useEffect(() => {
@@ -158,6 +167,9 @@ const NewQuote = () => {
     return (
         <div className={classes.new_quote}>
             {displayError && <ErrorModal title={errorTitle} message={errorMessage} onClick={closeErrorHandler}/>}
+            {displayConfirmModal &&
+            <ConfirmModal title='Are you sure?' message='Cancelling will cause you to lose any entered information'
+                          onConfirm={onQuitHandler} onCancel={onContinueHandler}/>}
             <form autoComplete='off'>
                 <ClientForm onClientChange={onClientChange} isValid={validClientHandler}/>
                 <AddressForm isValid={validOriginHandler} onChange={setOrigin} addressType="Origin"/>
@@ -181,6 +193,6 @@ const NewQuote = () => {
             </form>
         </div>
     );
-};
+}
 
 export default NewQuote;
